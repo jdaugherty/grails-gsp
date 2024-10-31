@@ -1,9 +1,9 @@
 dependencies {
-    compileOnly "org.apache.ant:ant:${antVersion}"
+    compileOnly "org.apache.ant:ant"
     api project(":grails-gsp")
     api "org.grails:grails-web-common:$grailsVersion"
     api project(":grails-web-taglib")
 
-    testImplementation "net.bytebuddy:byte-buddy:$byteBuddyVersion"
-    testRuntimeOnly "org.grails:grails-spring:$grailsVersion"
+    testImplementation "net.bytebuddy:byte-buddy"
+    testRuntimeOnly "org.grails:grails-spring"
 }
