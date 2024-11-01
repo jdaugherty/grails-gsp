@@ -3,6 +3,7 @@ buildscript {
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repository.apache.org/content/repositories/snapshots" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
@@ -21,12 +22,6 @@ ext {
 repositories {
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
-    if(groovyVersion.endsWith('-SNAPSHOT')) {
-        maven {
-            name = 'ASF Snapshot repo'
-            url = 'https://repository.apache.org/content/repositories/snapshots'
-        }
-    }
 }
 
 group = "org.grails"
@@ -62,12 +57,7 @@ subprojects { subproject ->
     repositories {
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
-        if(groovyVersion.endsWith('-SNAPSHOT')) {
-            maven {
-                name = 'ASF Snapshot repo'
-                url = 'https://repository.apache.org/content/repositories/snapshots'
-            }
-        }
+        maven { url "https://repository.apache.org/content/repositories/snapshots" }
     }
 
     if (subproject.name.startsWith("examples")) {
@@ -78,16 +68,14 @@ subprojects { subproject ->
         apply plugin: 'groovy'
         apply plugin: 'java-library'
 
-        repositories {
-            maven { url "https://repo.grails.org/grails/core" }
-        }
-
         configurations {
             documentation
         }
         
         dependencies {
             implementation platform("org.grails:grails-bom:$grailsVersion")
+            documentation platform("org.grails:grails-bom:$grailsVersion")
+
             api "org.apache.groovy:groovy:$groovyVersion"
             api "org.slf4j:slf4j-api:$slf4jVersion"
 
@@ -95,7 +83,6 @@ subprojects { subproject ->
             testImplementation "org.springframework:spring-test"
 
             documentation "org.fusesource.jansi:jansi"
-
         }
 
         test {
@@ -107,7 +94,7 @@ subprojects { subproject ->
         groovydoc.classpath += (configurations.documentation + configurations.compileClasspath)
 
         dependencies {
-            documentation "org.apache.groovy:groovy-dateutil"
+            documentation "org.apache.groovy:groovy-dateutil:$groovyVersion"
         }
     }
 
@@ -145,7 +132,7 @@ subprojects { subproject ->
 
         testImplementation "jakarta.servlet:jakarta.servlet-api"
         implementation "jakarta.persistence:jakarta.persistence-api"
-        testImplementation "org.apache.groovy:groovy-test-junit5"
+        testImplementation "org.apache.groovy:groovy-test-junit5:$groovyVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-api"
         testImplementation "org.junit.platform:junit-platform-runner"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
@@ -169,15 +156,14 @@ subprojects { subproject ->
     }
 
     dependencies {
-        documentation platform("org.grails:grails-bom:$grailsVersion")
         if (configurations.find { subproject.name == 'documentation' }) {
             documentation "org.fusesource.jansi:jansi"
             documentation "jline:jline"
             documentation "com.github.javaparser:javaparser-core"
-            documentation "org.apache.groovy:groovy"
-            documentation "org.apache.groovy:groovy-ant"
-            documentation "org.apache.groovy:groovy-dateutil"
-            documentation "org.apache.groovy:groovy-cli-picocli"
+            documentation "org.apache.groovy:groovy:$groovyVersion"
+            documentation "org.apache.groovy:groovy-ant:$groovyVersion"
+            documentation "org.apache.groovy:groovy-dateutil:$groovyVersion"
+            documentation "org.apache.groovy:groovy-cli-picocli:$groovyVersion"
             documentation "org.asciidoctor:asciidoctorj"
         }
     }
@@ -348,9 +334,9 @@ dependencies {
         documentation "org.fusesource.jansi:jansi"
         documentation "jline:jline"
         documentation "com.github.javaparser:javaparser-core"
-        documentation "org.apache.groovy:groovy"
-        documentation "org.apache.groovy:groovy-ant"
-        documentation "org.apache.groovy:groovy-cli-picocli"
+        documentation "org.apache.groovy:groovy:$groovyVersion"
+        documentation "org.apache.groovy:groovy-ant:$groovyVersion"
+        documentation "org.apache.groovy:groovy-cli-picocli:$groovyVersion"
         documentation "org.asciidoctor:asciidoctorj"
     }
 }
