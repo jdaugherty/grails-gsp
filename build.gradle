@@ -169,6 +169,7 @@ subprojects { subproject ->
     }
 
     dependencies {
+        documentation platform("org.grails:grails-bom:$grailsVersion")
         if (configurations.find { subproject.name == 'documentation' }) {
             documentation "org.fusesource.jansi:jansi"
             documentation "jline:jline"
