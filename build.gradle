@@ -101,11 +101,7 @@ subprojects { subproject ->
     apply plugin: 'idea'
     apply plugin: 'java-library'
 
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    }
+    compileJava.options.release = 17
 
     configurations.all {
 
