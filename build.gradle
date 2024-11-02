@@ -75,7 +75,7 @@ subprojects { subproject ->
             documentation platform("org.grails:grails-bom:$grailsVersion")
 
             api "org.apache.groovy:groovy:$groovyVersion"
-            api "org.slf4j:slf4j-api:$slf4jVersion"
+            api "org.slf4j:slf4j-api"
 
             testImplementation "org.spockframework:spock-core"
             testImplementation "org.springframework:spring-test"
@@ -100,26 +100,6 @@ subprojects { subproject ->
     apply plugin: 'java-library'
 
     compileJava.options.release = 17
-
-    configurations.all {
-
-        // FORCE UPGRADE OF GROOVY IN DEPENDENCIES TO GROOVY 4
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.codehaus.groovy') {
-                details.useTarget(group: 'org.apache.groovy', name: details.requested.name, version: groovyVersion)
-            }
-        }
-
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == "org.spockframework") {
-                details.useVersion(spockVersion)
-            } else if (details.requested.group == "org.junit.jupiter") {
-                details.useVersion(junitJupiterVersion)
-            } else if (details.requested.group == "org.junit.platform") {
-                details.useVersion(junitPlatformVerison)
-            }
-        }
-    }
 
     dependencies {
         compileOnly "jakarta.servlet:jakarta.servlet-api"
