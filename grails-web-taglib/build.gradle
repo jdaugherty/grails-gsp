@@ -1,9 +1,11 @@
 dependencies {
-    compileOnlyApi "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
+    compileOnlyApi "jakarta.servlet:jakarta.servlet-api"
     api "org.grails:grails-web-common:$grailsVersion"
     api project(":grails-taglib")
+    compileOnly project(":grails-gsp")
+    testImplementation project(":grails-gsp")
 
-    testRuntimeOnly "org.grails:grails-spring:$grailsVersion"
+    testRuntimeOnly "org.grails:grails-spring"
 }
 
 // TODO: Remove this after update to Grails 5.0.0.M2

@@ -21,12 +21,6 @@ ext {
 repositories {
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
-    if(groovyVersion.endsWith('-SNAPSHOT')) {
-        maven {
-            name = 'ASF Snapshot repo'
-            url = 'https://repository.apache.org/content/repositories/snapshots'
-        }
-    }
 }
 
 group = "org.grails"
@@ -62,12 +56,6 @@ subprojects { subproject ->
     repositories {
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
-        if(groovyVersion.endsWith('-SNAPSHOT')) {
-            maven {
-                name = 'ASF Snapshot repo'
-                url = 'https://repository.apache.org/content/repositories/snapshots'
-            }
-        }
     }
 
     if (subproject.name.startsWith("examples")) {
@@ -78,24 +66,21 @@ subprojects { subproject ->
         apply plugin: 'groovy'
         apply plugin: 'java-library'
 
-        repositories {
-            maven { url "https://repo.grails.org/grails/core" }
-        }
-
         configurations {
             documentation
         }
         
         dependencies {
             implementation platform("org.grails:grails-bom:$grailsVersion")
+            documentation platform("org.grails:grails-bom:$grailsVersion")
+
             api "org.apache.groovy:groovy:$groovyVersion"
-            api "org.slf4j:slf4j-api:$slf4jVersion"
+            api "org.slf4j:slf4j-api"
 
-            testImplementation "org.spockframework:spock-core:$spockVersion"
-            testImplementation "org.springframework:spring-test:$springVersion"
+            testImplementation "org.spockframework:spock-core"
+            testImplementation "org.springframework:spring-test"
 
-            documentation "org.fusesource.jansi:jansi:$jansiVersion"
-
+            documentation "org.fusesource.jansi:jansi"
         }
 
         test {
@@ -114,48 +99,17 @@ subprojects { subproject ->
     apply plugin: 'idea'
     apply plugin: 'java-library'
 
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    }
-
-    configurations.all {
-
-        // FORCE UPGRADE OF GROOVY IN DEPENDENCIES TO GROOVY 4
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.codehaus.groovy') {
-                details.useTarget(group: 'org.apache.groovy', name: details.requested.name, version: groovyVersion)
-            }
-        }
-
-        // FORCE UPGRADE OF SPRING BOOT IN DEPENDENCIES TO SPRING BOOT 3
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'org.springframework.boot') {
-                details.useTarget(group: 'org.springframework.boot', name: details.requested.name, version: springBootVersion)
-            }
-        }
-
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == "org.spockframework") {
-                details.useVersion(spockVersion)
-            } else if (details.requested.group == "org.junit.jupiter") {
-                details.useVersion(junitJupiterVersion)
-            } else if (details.requested.group == "org.junit.platform") {
-                details.useVersion(junitPlatformVerison)
-            }
-        }
-    }
+    compileJava.options.release = 17
 
     dependencies {
-        compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
+        compileOnly "jakarta.servlet:jakarta.servlet-api"
 
-        testImplementation "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
-        implementation "jakarta.persistence:jakarta.persistence-api:$jakartaPersistenceVersion"
-        testImplementation "org.apache.groovy:groovy-test-junit5:${groovyVersion}"
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-        testImplementation "org.junit.platform:junit-platform-runner:${junitPlatformVerison}"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+        testImplementation "jakarta.servlet:jakarta.servlet-api"
+        implementation "jakarta.persistence:jakarta.persistence-api"
+        testImplementation "org.apache.groovy:groovy-test-junit5:$groovyVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-api"
+        testImplementation "org.junit.platform:junit-platform-runner"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
     }
 
     tasks.withType(Test) {
@@ -177,14 +131,14 @@ subprojects { subproject ->
 
     dependencies {
         if (configurations.find { subproject.name == 'documentation' }) {
-            documentation "org.fusesource.jansi:jansi:$jansiVersion"
-            documentation "jline:jline:$jlineVersion"
-            documentation "com.github.javaparser:javaparser-core:$javaParserCoreVersion"
-            documentation "org.apache.groovy:groovy:${groovyVersion}"
+            documentation "org.fusesource.jansi:jansi"
+            documentation "jline:jline"
+            documentation "com.github.javaparser:javaparser-core"
+            documentation "org.apache.groovy:groovy:$groovyVersion"
             documentation "org.apache.groovy:groovy-ant:$groovyVersion"
             documentation "org.apache.groovy:groovy-dateutil:$groovyVersion"
             documentation "org.apache.groovy:groovy-cli-picocli:$groovyVersion"
-            documentation "org.asciidoctor:asciidoctorj:$asciidoctorjVersion"
+            documentation "org.asciidoctor:asciidoctorj"
         }
     }
 
@@ -350,14 +304,14 @@ configurations {
 
 dependencies {
     if (configurations.find { it.name == 'documentation' }) {
-        documentation "info.picocli:picocli:$picocliVersion"
-        documentation "org.fusesource.jansi:jansi:$jansiVersion"
-        documentation "jline:jline:$jlineVersion"
-        documentation "com.github.javaparser:javaparser-core:$javaParserCoreVersion"
-        documentation "org.apache.groovy:groovy:${groovyVersion}"
+        documentation "info.picocli:picocli"
+        documentation "org.fusesource.jansi:jansi"
+        documentation "jline:jline"
+        documentation "com.github.javaparser:javaparser-core"
+        documentation "org.apache.groovy:groovy:$groovyVersion"
         documentation "org.apache.groovy:groovy-ant:$groovyVersion"
         documentation "org.apache.groovy:groovy-cli-picocli:$groovyVersion"
-        documentation "org.asciidoctor:asciidoctorj:$asciidoctorjVersion"
+        documentation "org.asciidoctor:asciidoctorj"
     }
 }
 

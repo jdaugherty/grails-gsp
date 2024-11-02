@@ -3,7 +3,7 @@ dependencies {
     api project(":grails-web-gsp")
 
 
-    compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
     // Required for JSP support
     compileOnly "jakarta.servlet.jsp:jakarta.servlet.jsp-api:$jspApiVersion"
     compileOnly "jakarta.el:jakarta.el-api:$elApiVersion"

@@ -14,33 +14,27 @@ configurations.all {
     }
 }
 dependencies {
-    compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
     api project(":grails-web-gsp-taglib")
     api "org.sitemesh:grails-plugin-sitemesh3:$sitemeshVersion"
 
     runtimeOnly(project(":grails-web-jsp"))
     api "org.apache.commons:commons-text:$commonsTextVersion"
     api "org.grails:grails-plugin-codecs:$grailsVersion"
-    astImplementation "org.grails:grails-web:$grailsVersion"
-    astImplementation "org.grails:grails-plugin-controllers:$grailsVersion"
+    astImplementation "org.grails:grails-web"
+    astImplementation "org.grails:grails-plugin-controllers"
 
-    testImplementation "org.grails:grails-web-testing-support:$testingSupportVersion", {
-        exclude module:'async'
-    }
-    testImplementation "org.grails:grails-testing-support:$testingSupportVersion", {
-        exclude module:'async'
-    }
-    testImplementation "org.grails:grails-gorm-testing-support:$testingSupportVersion", {
-        exclude module:'async'
-    }
+    testImplementation "org.grails:grails-web-testing-support"
+    testImplementation "org.grails:grails-testing-support"
+    testImplementation "org.grails:grails-gorm-testing-support"
 
     testRuntimeOnly "org.grails.plugins:async"
-    testImplementation "jakarta.annotation:jakarta.annotation-api:$annotationApiVersion"
+    testImplementation "jakarta.annotation:jakarta.annotation-api"
     testImplementation "jakarta.servlet.jsp:jakarta.servlet.jsp-api:${jspApiVersion}"
     testRuntimeOnly "org.glassfish.web:jakarta.servlet.jsp.jstl:${jstlVersion}"
     testImplementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:${jstlVersion}"
 
-    testRuntimeOnly "org.grails:grails-plugin-url-mappings:$grailsVersion"
+    testRuntimeOnly "org.grails:grails-plugin-url-mappings"
 }
 
 test {

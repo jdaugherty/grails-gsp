@@ -1,4 +1,4 @@
 dependencies {
-    compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
     api project(':grails-web-jsp')
 }
