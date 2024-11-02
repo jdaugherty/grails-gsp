@@ -72,7 +72,6 @@ subprojects { subproject ->
         
         dependencies {
             implementation platform("org.grails:grails-bom:$grailsVersion")
-            documentation platform("org.grails:grails-bom:$grailsVersion")
 
             api "org.apache.groovy:groovy:$groovyVersion"
             api "org.slf4j:slf4j-api"
@@ -131,6 +130,7 @@ subprojects { subproject ->
 
     dependencies {
         if (configurations.find { subproject.name == 'documentation' }) {
+            documentation platform("org.grails:grails-bom:$grailsVersion")
             documentation "org.fusesource.jansi:jansi"
             documentation "jline:jline"
             documentation "com.github.javaparser:javaparser-core"
@@ -304,6 +304,7 @@ configurations {
 
 dependencies {
     if (configurations.find { it.name == 'documentation' }) {
+        documentation platform("org.grails:grails-bom:$grailsVersion")
         documentation "info.picocli:picocli"
         documentation "org.fusesource.jansi:jansi"
         documentation "jline:jline"
