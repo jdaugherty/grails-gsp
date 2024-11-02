@@ -79,6 +79,7 @@ subprojects { subproject ->
             testImplementation "org.spockframework:spock-core"
             testImplementation "org.springframework:spring-test"
 
+            documentation platform("org.grails:grails-bom:$grailsVersion")
             documentation "org.fusesource.jansi:jansi"
         }
 
@@ -130,7 +131,6 @@ subprojects { subproject ->
 
     dependencies {
         if (configurations.find { subproject.name == 'documentation' }) {
-            documentation platform("org.grails:grails-bom:$grailsVersion")
             documentation "org.fusesource.jansi:jansi"
             documentation "jline:jline"
             documentation "com.github.javaparser:javaparser-core"
