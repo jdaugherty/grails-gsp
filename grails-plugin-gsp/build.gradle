@@ -36,11 +36,6 @@ dependencies {
 
     testRuntimeOnly "org.grails:grails-plugin-url-mappings"
 }
-// disable main class
-bootJar {
-    mainClass.set('dummy.Application')
-}
-findMainClass.onlyIf { false }
 test {
     if (isCiBuild) {
         maxParallelForks = 1
