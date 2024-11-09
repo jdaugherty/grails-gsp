@@ -84,9 +84,6 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
                     .find { csrfFilterClass.isInstance(it) }) {
                 springSecurityCsrfTokenClass =
                         Class.forName("org.springframework.security.web.csrf.CsrfToken")
-                if (springSecurityCsrfTokenClass) {
-                    log.debug "Spring Security Csrf protection detected."
-                }
             }
         } catch (ClassNotFoundException ignore) {}
     }
