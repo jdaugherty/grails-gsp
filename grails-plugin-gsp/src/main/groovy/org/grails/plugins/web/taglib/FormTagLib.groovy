@@ -66,6 +66,7 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
 
     private List<String> booleanAttributes = DEFAULT_BOOLEAN_ATTRIBUTES
 
+    // Set if Spring Security is being used and the CsrfFilter is in the Filter Chain
     Class<?> springSecurityCsrfTokenClass
 
     void afterPropertiesSet() {
