@@ -76,15 +76,16 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
             conversionService = applicationContext.getBean('mvcConversionService', ConversionService)
         }
         try {
-            var filterChainProxyClass = Class.forName("org.springframework.security.web.FilterChainProxy")
-            var csrfFilterClass = Class.forName("org.springframework.security.web.csrf.CsrfFilter")
-            if (filterChainProxyClass) {
-                var filterChainProxy = applicationContext.getBean(filterChainProxyClass)
-                if (filterChainProxy && filterChainProxy.filterChains*.filters.flatten().find { csrfFilterClass.isInstance(it) }) {
-                    springSecurityCsrfTokenClass = Class.forName("org.springframework.security.web.csrf.CsrfToken")
-                    if (springSecurityCsrfTokenClass) {
-                        log.debug "Spring Security Csrf protection detected."
-                    }
+            var filterChainProxy = applicationContext.getBean(
+                    Class.forName("org.springframework.security.web.FilterChainProxy"))
+            var csrfFilterClass =
+                    Class.forName("org.springframework.security.web.csrf.CsrfFilter")
+            if (filterChainProxy && filterChainProxy.filterChains*.filters.flatten()
+                    .find { csrfFilterClass.isInstance(it) }) {
+                springSecurityCsrfTokenClass =
+                        Class.forName("org.springframework.security.web.csrf.CsrfToken")
+                if (springSecurityCsrfTokenClass) {
+                    log.debug "Spring Security Csrf protection detected."
                 }
             }
         } catch (ClassNotFoundException ignore) {}
