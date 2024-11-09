@@ -66,6 +66,8 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
 
     private List<String> booleanAttributes = DEFAULT_BOOLEAN_ATTRIBUTES
 
+    Class<?> springSecurityCsrfTokenClass
+
     void afterPropertiesSet() {
         if (applicationContext.containsBean('requestDataValueProcessor')) {
             requestDataValueProcessor = applicationContext.getBean('requestDataValueProcessor', RequestDataValueProcessor)
@@ -73,6 +75,19 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
         if (applicationContext.containsBean('mvcConversionService')) {
             conversionService = applicationContext.getBean('mvcConversionService', ConversionService)
         }
+        try {
+            var filterChainProxyClass = Class.forName("org.springframework.security.web.FilterChainProxy")
+            var csrfFilterClass = Class.forName("org.springframework.security.web.csrf.CsrfFilter")
+            if (filterChainProxyClass) {
+                var filterChainProxy = applicationContext.getBean(filterChainProxyClass)
+                if (filterChainProxy && filterChainProxy.filterChains*.filters.flatten().find { csrfFilterClass.isInstance(it) }) {
+                    springSecurityCsrfTokenClass = Class.forName("org.springframework.security.web.csrf.CsrfToken")
+                    if (springSecurityCsrfTokenClass) {
+                        log.debug "Spring Security Csrf protection detected."
+                    }
+                }
+            }
+        } catch (ClassNotFoundException ignore) {}
     }
 
     /**
@@ -433,8 +448,7 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
 
         if (notGet) {
             writer << 'method="post" '
-        }
-        else {
+        } else {
             writer << 'method="get" '
         }
 
@@ -452,6 +466,12 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
 
         if (notGet && httpMethod != HttpMethod.POST) {
             hiddenFieldImpl(writer, [name: "_method", value: httpMethod.toString()])
+        }
+        if (notGet && springSecurityCsrfTokenClass) {
+            var csrfToken = request[springSecurityCsrfTokenClass.getName()]
+            if (csrfToken) {
+                hiddenFieldImpl(writer, [name: csrfToken.parameterName, value: csrfToken.token])
+            }
         }
 
         if (useToken) {

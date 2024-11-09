@@ -24,6 +24,8 @@ dependencies {
     astImplementation "org.grails:grails-web"
     astImplementation "org.grails:grails-plugin-controllers"
 
+    compileOnly "org.springframework.security:spring-security-web"
+
     testImplementation "org.grails:grails-web-testing-support"
     testImplementation "org.grails:grails-testing-support"
     testImplementation "org.grails:grails-gorm-testing-support"
