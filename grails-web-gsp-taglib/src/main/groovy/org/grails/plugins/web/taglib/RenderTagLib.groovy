@@ -37,6 +37,9 @@ import org.springframework.util.StringUtils
 @TagLib
 class RenderTagLib implements TagLibrary {
 
+    RenderTagLib() {}
+
+    @Autowired
     RenderTagLib(GroovyPagesTemplateRenderer groovyPagesTemplateRenderer, @Autowired(required = false) ErrorsViewStackTracePrinter errorsViewStackTracePrinter, CodecLookup codecLookup) {
         this.groovyPagesTemplateRenderer = groovyPagesTemplateRenderer
         this.errorsViewStackTracePrinter = errorsViewStackTracePrinter
