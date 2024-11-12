@@ -24,6 +24,7 @@ import org.grails.exceptions.ExceptionUtils
 import org.grails.web.errors.ErrorsViewStackTracePrinter
 import org.grails.web.gsp.GroovyPagesTemplateRenderer
 import org.grails.web.util.WebUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.util.StringUtils
 
@@ -36,7 +37,7 @@ import org.springframework.util.StringUtils
 @TagLib
 class RenderTagLib implements TagLibrary {
 
-    RenderTagLib(GroovyPagesTemplateRenderer groovyPagesTemplateRenderer, ErrorsViewStackTracePrinter errorsViewStackTracePrinter, CodecLookup codecLookup) {
+    RenderTagLib(GroovyPagesTemplateRenderer groovyPagesTemplateRenderer, @Autowired(required = false) ErrorsViewStackTracePrinter errorsViewStackTracePrinter, CodecLookup codecLookup) {
         this.groovyPagesTemplateRenderer = groovyPagesTemplateRenderer
         this.errorsViewStackTracePrinter = errorsViewStackTracePrinter
         this.codecLookup = codecLookup
