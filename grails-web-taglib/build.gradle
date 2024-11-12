@@ -1,5 +1,5 @@
 dependencies {
-    compileOnly "jakarta.servlet:jakarta.servlet-api"
+    compileOnlyApi "jakarta.servlet:jakarta.servlet-api:${servletApiVersion}" // api needed for TagLibrary trait
     api "org.grails:grails-web-common:$grailsVersion"
     api project(":grails-taglib")
     compileOnly project(":grails-gsp")
