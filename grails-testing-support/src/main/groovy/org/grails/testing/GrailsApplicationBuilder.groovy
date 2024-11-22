@@ -109,9 +109,7 @@ class GrailsApplicationBuilder {
         return context
     }
 
-    @CompileDynamic
     protected ConfigurableApplicationContext createMainContext(Object servletContext) {
-
         ConfigurableApplicationContext context
         if (isServletApiPresent && servletContext != null) {
             context = (AnnotationConfigServletWebApplicationContext) ClassUtils.forName('org.springframework.boot.web.servlet.context.AnnotationConfigServletWebApplicationContext').getDeclaredConstructor().newInstance()
@@ -119,13 +117,13 @@ class GrailsApplicationBuilder {
         } else {
             context = (ConfigurableApplicationContext) ClassUtils.forName('org.springframework.context.annotation.AnnotationConfigApplicationContext').getDeclaredConstructor().newInstance()
         }
+
         def classLoader = this.class.classLoader
-        def autoConfigurationClasses = ImportCandidates.load(AutoConfiguration, classLoader)
-                .asList()
-                .findAll { it.startsWith("org.grails") }
-                .collect { ClassUtils.forName(it, classLoader) }
-        if (!autoConfigurationClasses.isEmpty()) {
-            ((AnnotationConfigRegistry) context).register(*autoConfigurationClasses as Class[])
+        ImportCandidates.load(AutoConfiguration, classLoader).asList().findAll {
+            it.startsWith("org.grails")
+            && !it.contains("UrlMappingsAutoConfiguration") // this currently is causing an issue with tests
+        }.each {
+            ((AnnotationConfigRegistry) context).register(ClassUtils.forName(it, classLoader))
         }
 
         def beanFactory = context.getBeanFactory()
@@ -136,7 +134,6 @@ class GrailsApplicationBuilder {
         prepareContext(context, beanFactory)
         context.refresh()
         context.registerShutdownHook()
-
         return context
     }
 
