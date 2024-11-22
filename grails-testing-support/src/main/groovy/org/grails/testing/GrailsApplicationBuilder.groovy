@@ -1,7 +1,6 @@
 package org.grails.testing
 
 import grails.boot.config.GrailsApplicationPostProcessor
-import grails.boot.config.GrailsAutoConfiguration
 import grails.core.GrailsApplication
 import grails.core.GrailsApplicationLifeCycle
 import grails.core.support.proxy.DefaultProxyHandler
@@ -12,10 +11,6 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import jakarta.servlet.ServletContext
 import org.grails.plugins.IncludingPluginFilter
-import org.grails.plugins.codecs.CodecsConfiguration
-import org.grails.plugins.core.CoreConfiguration
-import org.grails.plugins.databinding.DataBindingConfiguration
-import org.grails.plugins.web.mime.MimeTypesConfiguration
 import org.grails.spring.context.support.GrailsPlaceholderConfigurer
 import org.grails.spring.context.support.MapBasedSmartPropertyOverrideConfigurer
 import org.grails.transaction.TransactionManagerPostProcessor
@@ -27,6 +22,8 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.beans.factory.support.RootBeanDefinition
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.context.annotation.ImportCandidates
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
@@ -36,10 +33,6 @@ import org.springframework.context.support.ConversionServiceFactoryBean
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.context.support.StaticMessageSource
 import org.springframework.core.Ordered
-import org.springframework.core.convert.ConversionService
-import org.springframework.core.env.ConfigurableEnvironment
-import org.springframework.core.env.Environment
-import org.springframework.core.env.PropertyResolver
 import org.springframework.util.ClassUtils
 
 /**
@@ -108,19 +101,22 @@ class GrailsApplicationBuilder {
     }
 
     protected ConfigurableApplicationContext createMainContext(Object servletContext) {
-
         ConfigurableApplicationContext context
-
         if (isServletApiPresent && servletContext != null) {
             context = (AnnotationConfigServletWebApplicationContext) ClassUtils.forName('org.springframework.boot.web.servlet.context.AnnotationConfigServletWebApplicationContext').getDeclaredConstructor().newInstance()
             ((AnnotationConfigServletWebApplicationContext) context).setServletContext((ServletContext) servletContext)
         } else {
             context = (ConfigurableApplicationContext) ClassUtils.forName('org.springframework.context.annotation.AnnotationConfigApplicationContext').getDeclaredConstructor().newInstance()
         }
-        ((AnnotationConfigRegistry) context).register(CoreConfiguration, CodecsConfiguration, DataBindingConfiguration, MimeTypesConfiguration)
 
-        def applicationClassLoader = this.class.classLoader
-        def configuredEnvironment = context.getEnvironment()
+        def classLoader = this.class.classLoader
+        ImportCandidates.load(AutoConfiguration, classLoader).asList().findAll {
+            it.startsWith("org.grails")
+            && !it.contains("UrlMappingsAutoConfiguration") // this currently is causing an issue with tests
+        }.each {
+            ((AnnotationConfigRegistry) context).register(ClassUtils.forName(it, classLoader))
+        }
+
         def beanFactory = context.getBeanFactory()
         (beanFactory as DefaultListableBeanFactory).with {
             setAllowBeanDefinitionOverriding(true)
@@ -129,7 +125,6 @@ class GrailsApplicationBuilder {
         prepareContext(context, beanFactory)
         context.refresh()
         context.registerShutdownHook()
-
         return context
     }
 
