@@ -1,7 +1,6 @@
 package org.grails.testing
 
 import grails.boot.config.GrailsApplicationPostProcessor
-import grails.boot.config.GrailsAutoConfiguration
 import grails.core.GrailsApplication
 import grails.core.GrailsApplicationLifeCycle
 import grails.core.support.proxy.DefaultProxyHandler
@@ -12,10 +11,6 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import jakarta.servlet.ServletContext
 import org.grails.plugins.IncludingPluginFilter
-import org.grails.plugins.codecs.CodecsConfiguration
-import org.grails.plugins.core.CoreConfiguration
-import org.grails.plugins.databinding.DataBindingConfiguration
-import org.grails.plugins.web.mime.MimeTypesConfiguration
 import org.grails.spring.context.support.GrailsPlaceholderConfigurer
 import org.grails.spring.context.support.MapBasedSmartPropertyOverrideConfigurer
 import org.grails.transaction.TransactionManagerPostProcessor
@@ -38,10 +33,6 @@ import org.springframework.context.support.ConversionServiceFactoryBean
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.context.support.StaticMessageSource
 import org.springframework.core.Ordered
-import org.springframework.core.convert.ConversionService
-import org.springframework.core.env.ConfigurableEnvironment
-import org.springframework.core.env.Environment
-import org.springframework.core.env.PropertyResolver
 import org.springframework.util.ClassUtils
 
 /**
