@@ -27,6 +27,8 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.beans.factory.support.RootBeanDefinition
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.context.annotation.ImportCandidates
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
@@ -107,20 +109,25 @@ class GrailsApplicationBuilder {
         return context
     }
 
+    @CompileDynamic
     protected ConfigurableApplicationContext createMainContext(Object servletContext) {
 
         ConfigurableApplicationContext context
-
         if (isServletApiPresent && servletContext != null) {
             context = (AnnotationConfigServletWebApplicationContext) ClassUtils.forName('org.springframework.boot.web.servlet.context.AnnotationConfigServletWebApplicationContext').getDeclaredConstructor().newInstance()
             ((AnnotationConfigServletWebApplicationContext) context).setServletContext((ServletContext) servletContext)
         } else {
             context = (ConfigurableApplicationContext) ClassUtils.forName('org.springframework.context.annotation.AnnotationConfigApplicationContext').getDeclaredConstructor().newInstance()
         }
-        ((AnnotationConfigRegistry) context).register(CoreConfiguration, CodecsConfiguration, DataBindingConfiguration, MimeTypesConfiguration)
+        def classLoader = this.class.classLoader
+        def autoConfigurationClasses = ImportCandidates.load(AutoConfiguration, classLoader)
+                .asList()
+                .findAll { it.startsWith("org.grails") }
+                .collect { ClassUtils.forName(it, classLoader) }
+        if (!autoConfigurationClasses.isEmpty()) {
+            ((AnnotationConfigRegistry) context).register(*autoConfigurationClasses as Class[])
+        }
 
-        def applicationClassLoader = this.class.classLoader
-        def configuredEnvironment = context.getEnvironment()
         def beanFactory = context.getBeanFactory()
         (beanFactory as DefaultListableBeanFactory).with {
             setAllowBeanDefinitionOverriding(true)
