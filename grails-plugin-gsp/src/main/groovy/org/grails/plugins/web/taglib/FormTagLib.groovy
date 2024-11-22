@@ -22,6 +22,7 @@ import grails.gsp.TagLib
 import groovy.transform.CompileStatic
 import groovy.util.logging.Commons
 import org.grails.plugins.web.GrailsTagDateHelper
+import org.springframework.beans.BeansException
 
 import java.text.DateFormat
 import java.text.DateFormatSymbols
@@ -76,6 +77,10 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
         if (applicationContext.containsBean('mvcConversionService')) {
             conversionService = applicationContext.getBean('mvcConversionService', ConversionService)
         }
+        configureCsrf()
+    }
+
+    void configureCsrf() {
         try {
             var filterChainProxy = applicationContext.getBean(
                     Class.forName("org.springframework.security.web.FilterChainProxy"))
@@ -85,7 +90,7 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
                 springSecurityCsrfTokenClass =
                         Class.forName("org.springframework.security.web.csrf.CsrfToken")
             }
-        } catch (ClassNotFoundException ignore) {}
+        } catch (ClassNotFoundException | BeansException ignore) {}
     }
 
     /**
