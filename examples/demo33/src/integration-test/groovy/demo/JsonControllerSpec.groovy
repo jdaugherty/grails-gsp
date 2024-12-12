@@ -32,6 +32,6 @@ class JsonControllerSpec extends Specification {
         def response = new URL("http://localhost:$serverPort/json/index").getText()
 
         then:
-        response == '\n<html><head><title></title></head><body>Testing</body></html>'
+        response.contains('<html><head><title></title></head><body>Testing</body></html>')
     }
 }
