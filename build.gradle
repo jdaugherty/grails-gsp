@@ -29,7 +29,7 @@ ext.set('signing.password', project.findProperty('signing.password') ?: System.g
 
 apply plugin: 'idea'
 
-allprojects {
+allprojects { prj ->
     repositories {
         mavenCentral()
         maven { url = 'https://repo.grails.org/grails/core' }
@@ -38,6 +38,17 @@ allprojects {
             maven {
                 name = 'ASF Snapshot repo'
                 url = 'https://repository.apache.org/content/repositories/snapshots'
+            }
+        }
+
+        if (System.getenv("SITEMESH_MAVEN_PASSWORD") && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
+            System.out.println("Adding Sitemesh Repo")
+            maven {
+                url = 'https://maven.pkg.github.com/codeconsole/grails-plugin-sitemesh3'
+                credentials {
+                    username = 'DOES_NOT_MATTER'
+                    password = System.getenv("SITEMESH_MAVEN_PASSWORD")
+                }
             }
         }
     }

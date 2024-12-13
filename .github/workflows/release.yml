@@ -10,6 +10,9 @@ jobs:
     outputs:
       release_version: ${{ steps.release_version.outputs.value }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,6 +33,8 @@ jobs:
       - name: "🧩 Run Assemble"
         if: success()
         run: ./gradlew assemble
+        env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
       - name: "📤 Upload Distribution"
         if: success()
         uses: actions/upload-artifact@v4
@@ -43,6 +48,7 @@ jobs:
       - name: "📤 Publish to and close Sonatype staging repository"
         id: publish
         env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
@@ -59,6 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read
     steps:
       - name: "📥 Checkout repository"
         uses: actions/checkout@v4
@@ -75,6 +82,7 @@ jobs:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       - name: "🚀 Release Sonatype Staging Repository"
         env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
@@ -90,6 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: read
     steps:
       - name: "📥 Checkout repository"
         uses: actions/checkout@v4
@@ -105,6 +114,8 @@ jobs:
         with:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       - name: "📖 Generate documentation"
+        env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew docs
       - name: "📤 Publish documentation to Github Pages"
         if: success()
