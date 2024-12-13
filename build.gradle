@@ -44,7 +44,7 @@ allprojects { prj ->
         if (System.getenv("GITHUB_ACTOR") && System.getenv("GH_TOKEN")
                 && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
             maven {
-                url = 'https://maven.pkg.github.com/codeconsolegrails-plugin-sitemesh3'
+                url = 'https://maven.pkg.github.com/codeconsole/grails-plugin-sitemesh3'
                 credentials {
                     username = System.getenv("GITHUB_ACTOR")
                     password = System.getenv("GH_TOKEN")
