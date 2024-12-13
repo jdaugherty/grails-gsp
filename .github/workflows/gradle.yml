@@ -7,14 +7,12 @@ on:
     branches:
       - '[3-9]+.[0-9]+.x'
   workflow_dispatch:
-permissions:
-  contents: read
-  packages: read
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read
     steps:
       - name: "📥 Checkout the repository"
         uses: actions/checkout@v4
@@ -45,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: read
     steps:
       - name: "📥 Checkout the repository"
         uses: actions/checkout@v4
@@ -70,6 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: read
     steps:
       - name: "📥 Checkout the repository"
         uses: actions/checkout@v4
@@ -89,6 +89,8 @@ jobs:
         if: steps.docs.outcome == 'success'
         uses: grails/github-pages-deploy-action@v2
         env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_SITEMESH_REPO: true
           TARGET_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRANCH: gh-pages
