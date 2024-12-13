@@ -40,9 +40,8 @@ allprojects { prj ->
                 url = 'https://repository.apache.org/content/repositories/snapshots'
             }
         }
-        println "Check 1:${System.getenv('GITHUB_ACTOR')?.size()} 2:${System.getenv('GH_TOKEN')?.size()} 3:${prj.name == 'grails-plugin-gsp'?:'skip'} 4:${!sitemeshVersion.endsWith('-SNAPSHOT')} 5:${System.getenv('DEVELOCITY_BUILD_CACHE_NODE_USER')?.size()}"
-        if (System.getenv("GITHUB_ACTOR") && System.getenv("GH_TOKEN")
-                && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
+        println "Check 1:${System.getenv("CHECK_BY_TOKEN")} 2:${prj.name == 'grails-plugin-gsp'?:'skip'} 3:${!sitemeshVersion.endsWith('-SNAPSHOT')}"
+        if (System.getenv("CHECK_BY_TOKEN") == "true" && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
             maven {
                 url = 'https://maven.pkg.github.com/codeconsole/grails-plugin-sitemesh3'
                 credentials {
