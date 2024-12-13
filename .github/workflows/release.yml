@@ -34,9 +34,8 @@ jobs:
         with:
           arguments: assemble
         env:
-          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          CHECK_BY_TOKEN: true
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
+          CHECK_SITEMESH_REPO: true
           DEVELOCITY_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
           DEVELOCITY_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
           DEVELOCITY_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
@@ -54,9 +53,8 @@ jobs:
         id: publish
         uses: gradle/gradle-build-action@v3
         env:
-          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          CHECK_BY_TOKEN: true
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
+          CHECK_SITEMESH_REPO: true
           DEVELOCITY_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
           DEVELOCITY_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
           DEVELOCITY_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
