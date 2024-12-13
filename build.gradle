@@ -41,7 +41,7 @@ allprojects { prj ->
             }
         }
 
-        if (System.getenv("CHECK_SITEMESH_REPO") && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
+        if (System.getenv("SITEMESH_MAVEN_PASSWORD") && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
             System.out.println("Adding Sitemesh Repo")
             maven {
                 url = 'https://maven.pkg.github.com/codeconsole/grails-plugin-sitemesh3'

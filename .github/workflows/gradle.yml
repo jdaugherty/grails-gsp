@@ -29,7 +29,6 @@ jobs:
         id: build
         env:
           SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_SITEMESH_REPO: true
         run: ./gradlew build --refresh-dependencies
       - name: "📤 Upload Artifact"
         if: success()
@@ -59,7 +58,6 @@ jobs:
       - name: "📤 Publish Snapshot to repo.grails.org"
         env:
           SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_SITEMESH_REPO: true
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
         run: ./gradlew publish
@@ -90,7 +88,6 @@ jobs:
         uses: grails/github-pages-deploy-action@v2
         env:
           SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_SITEMESH_REPO: true
           TARGET_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRANCH: gh-pages

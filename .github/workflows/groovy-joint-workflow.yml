@@ -138,7 +138,6 @@ jobs:
       - name: "🔨 Build and test project using the locally built Groovy snapshot"
         env:
           SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          CHECK_SITEMESH_REPO: true
           DEVELOCITY_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
           DEVELOCITY_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
         run: >
