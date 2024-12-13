@@ -25,7 +25,7 @@ dependencies {
     profile "org.grails.profiles:web"
     runtimeOnly "com.h2database:h2"
     runtimeOnly "org.apache.tomcat:tomcat-jdbc"
-    runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
+    runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails"
 
     testImplementation project(':grails-web-testing-support')
     testImplementation project(':grails-gorm-testing-support')
