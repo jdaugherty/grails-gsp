@@ -114,12 +114,13 @@ jobs:
         with:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       - name: "📖 Generate documentation"
+        env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew docs
       - name: "📤 Publish documentation to Github Pages"
         if: success()
         uses: micronaut-projects/github-pages-deploy-action@grails
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           BETA: ${{ contains(needs.publish.outputs.release_version, 'M') || contains(needs.publish.outputs.release_version, 'RC') }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRANCH: gh-pages
