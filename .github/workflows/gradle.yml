@@ -82,12 +82,13 @@ jobs:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       - name: "🔨 Build Docs"
         id: docs
+        env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew docs --refresh-dependencies
       - name: "📤 Publish docs to Github Pages"
         if: steps.docs.outcome == 'success'
         uses: grails/github-pages-deploy-action@v2
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRANCH: gh-pages
