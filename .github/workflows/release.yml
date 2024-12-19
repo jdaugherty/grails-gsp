@@ -29,12 +29,12 @@ jobs:
         with:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       - name: "⚙ Run pre-release"
-        uses: micronaut-projects/github-actions/pre-release@master
+        uses: grails/github-actions/pre-release@main
       - name: "🧩 Run Assemble"
         if: success()
         run: ./gradlew assemble
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - name: "📤 Upload Distribution"
         if: success()
         uses: actions/upload-artifact@v4
@@ -48,7 +48,7 @@ jobs:
       - name: "📤 Publish to and close Sonatype staging repository"
         id: publish
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
@@ -92,7 +92,7 @@ jobs:
           releaseSonatypeStagingRepository
       - name: "⚙️ Run post-release"
         if: success()
-        uses: micronaut-projects/github-actions/post-release@master
+        uses: grails/github-actions/post-release@main
   docs:
     needs: publish
     runs-on: ubuntu-latest
@@ -119,7 +119,7 @@ jobs:
         run: ./gradlew docs
       - name: "📤 Publish documentation to Github Pages"
         if: success()
-        uses: micronaut-projects/github-pages-deploy-action@grails
+        uses: grails/github-pages-deploy-action@grails
         env:
           BETA: ${{ contains(needs.publish.outputs.release_version, 'M') || contains(needs.publish.outputs.release_version, 'RC') }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}

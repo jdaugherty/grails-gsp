@@ -33,7 +33,7 @@ jobs:
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Publish to Github Pages
         if: success()
-        uses: micronaut-projects/github-pages-deploy-action@grails
+        uses: grails/github-pages-deploy-action@grails
         env:
           BETA: ${{ contains(github.event.inputs.version, 'M') }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}

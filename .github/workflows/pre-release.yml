@@ -1,0 +1,61 @@
+name: "🖨️ Pre Release"
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to Publish'
+        required: true
+      targetVersion:
+        description: 'Expected Release Version'
+        required: true
+env:
+  GIT_USER_NAME: 'grails-build'
+  GIT_USER_EMAIL: 'grails-build@users.noreply.github.com'
+jobs:
+  publish:
+    outputs:
+      release_version: ${{ steps.release_version.outputs.value }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: "📥 Checkout repository"
+        uses: actions/checkout@v4
+        ref: ${{ github.event.inputs.branch }}
+      - name: "☕️ Setup JDK"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+      - name: "🐘 Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+      - name: "⚙ Set version to ${{ github.event.inputs.targetVersion }}"
+        run: |
+          sed -i "s/^projectVersion.*$/projectVersion\=${{ github.event.inputs.targetVersion }}/" gradle.properties
+          cat gradle.properties
+      - name: "🧩 Run Assemble"
+        if: success()
+        run: ./gradlew assemble
+        env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
+      - name: "🔐 Generate key file for artifact signing"
+        env:
+          SECRING_FILE: ${{ secrets.SECRING_FILE }}
+        run: echo $SECRING_FILE | base64 -d > ${{ github.workspace }}/secring.gpg
+      - name: "📤 Publish to GitHub Packages"
+        id: publish
+        env:
+          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GH_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PUBLISH: 'true'
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+          SECRING_FILE: ${{ secrets.SECRING_FILE }}
+        run: >
+          ./gradlew
+          -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg 
+          publish
