@@ -2,9 +2,6 @@ name: "🖨️ Pre Release"
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to Publish'
-        required: true
       targetVersion:
         description: 'Expected Release Version'
         required: true
@@ -13,17 +10,69 @@ env:
   GIT_USER_EMAIL: 'grails-build@users.noreply.github.com'
 jobs:
   publish:
-    outputs:
-      release_version: ${{ steps.release_version.outputs.value }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
+      - name: "Purge Existing Builds - org.grails.grails-gsp"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: "org.grails.grails-gsp"
+          package-type: "maven"
+          min-versions-to-keep: 0
+      - name: "Purge Existing Builds - org.grails.grails-taglib"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: "org.grails.grails-taglib"
+          package-type: "maven"
+          min-versions-to-keep: 0
+      - name: "Purge Existing Builds - org.grails.grails-web-gsp-taglib"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: "org.grails.grails-web-gsp-taglib"
+          package-type: "maven"
+          min-versions-to-keep: 0
+      - name: "Purge Existing Builds - org.grails.grails-web-jsp"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: "org.grails.grails-web-jsp"
+          package-type: "maven"
+          min-versions-to-keep: 0
+      - name: "Purge Existing Builds - org.grails.grails-web-gsp"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: "org.grails.grails-web-gsp"
+          package-type: "maven"
+          min-versions-to-keep: 0
+      - name: "Purge Existing Builds - org.grails.grails-web-taglib"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: "org.grails.grails-web-taglib"
+          package-type: "maven"
+          min-versions-to-keep: 0
+      - name: "Purge Existing Builds -  org.grails.plugins.gsp"
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: " org.grails.plugins.gsp"
+          package-type: "maven"
+          min-versions-to-keep: 0
       - name: "📥 Checkout repository"
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.branch }}
+      - name: "Set Prevent Snapshot Publishing Flag"
+        run: |
+          sed -i "s/^projectVersion.*$/preventSnapshotPublish\=true/" gradle.properties
+      - name: "Commit flag to prevent snapshot publishing"
+        run: |
+          git config user.name "${{ env.GIT_USER_NAME }}"
+          git config user.email "${{ env.GIT_USER_EMAIL }}"
+          git add gradle.properties
+          if ! git diff --cached --quiet; then
+            git commit -m "[skip ci] Pre Release - ${{ github.event.inputs.targetVersion }} - Preventing Snapshot Publishing"
+            git push origin HEAD
+          else
+            echo "Publishing already disabled."
+          fi
       - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
