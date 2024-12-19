@@ -22,7 +22,8 @@ jobs:
     steps:
       - name: "📥 Checkout repository"
         uses: actions/checkout@v4
-        ref: ${{ github.event.inputs.branch }}
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
