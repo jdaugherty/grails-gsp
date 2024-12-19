@@ -51,10 +51,10 @@ jobs:
           package-name: "org.grails.grails-web-taglib"
           package-type: "maven"
           min-versions-to-keep: 0
-      - name: "Purge Existing Builds -  org.grails.plugins.gsp"
+      - name: "Purge Existing Builds - org.grails.plugins.gsp"
         uses: actions/delete-package-versions@v5
         with:
-          package-name: " org.grails.plugins.gsp"
+          package-name: "org.grails.plugins.gsp"
           package-type: "maven"
           min-versions-to-keep: 0
       - name: "📥 Checkout repository"
