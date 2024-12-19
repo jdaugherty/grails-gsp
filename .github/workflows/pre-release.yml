@@ -15,7 +15,7 @@ jobs:
       contents: write
       packages: write
     steps:
-      - name: "Purge Existing Builds - org.grails.grails-gsp"
+      - name: "💥 Purge Existing Builds - org.grails.grails-gsp"
         run: |
           curl -L \
           -X DELETE \
@@ -23,7 +23,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/orgs/${{ github.repository_owner }}/packages/maven/org.grails.grails-gsp || true
-      - name: "Purge Existing Builds - org.grails.grails-taglib"
+      - name: "💥 Purge Existing Builds - org.grails.grails-taglib"
         run: |
           curl -L \
           -X DELETE \
@@ -31,7 +31,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/orgs/grails/packages/maven/org.grails.grails-taglib || true
-      - name: "Purge Existing Builds - org.grails.grails-web-gsp-taglib"
+      - name: "💥 Purge Existing Builds - org.grails.grails-web-gsp-taglib"
         run: |
           curl -L \
           -X DELETE \
@@ -39,7 +39,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/orgs/${{ github.repository_owner }}/packages/maven/org.grails.grails-web-gsp-taglib || true
-      - name: "Purge Existing Builds - org.grails.grails-web-jsp"
+      - name: "💥 Purge Existing Builds - org.grails.grails-web-jsp"
         run: |
           curl -L \
           -X DELETE \
@@ -47,7 +47,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/orgs/${{ github.repository_owner }}/packages/maven/org.grails.grails-web-jsp || true
-      - name: "Purge Existing Builds - org.grails.grails-web-gsp"
+      - name: "💥 Purge Existing Builds - org.grails.grails-web-gsp"
         run: |
           curl -L \
           -X DELETE \
@@ -55,7 +55,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/orgs/${{ github.repository_owner }}/packages/maven/org.grails.grails-web-gsp || true
-      - name: "Purge Existing Builds - org.grails.grails-web-taglib"
+      - name: "💥 Purge Existing Builds - org.grails.grails-web-taglib"
         run: |
           curl -L \
           -X DELETE \
@@ -63,7 +63,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/orgs/${{ github.repository_owner }}/packages/maven/org.grails.grails-web-taglib || true
-      - name: "Purge Existing Builds - org.grails.plugins.gsp"
+      - name: "💥 Purge Existing Builds - org.grails.plugins.gsp"
         run: |
           curl -L \
           -X DELETE \
@@ -73,10 +73,10 @@ jobs:
           https://api.github.com/orgs/${{ github.repository_owner }}/packages/maven/org.grails.plugins.gsp || true
       - name: "📥 Checkout repository"
         uses: actions/checkout@v4
-      - name: "Set Prevent Snapshot Publishing Flag"
+      - name: "🛑 Set Prevent Snapshot Publishing Flag"
         run: |
           sed -i "s/^preventSnapshotPublish.*$/preventSnapshotPublish\=true/" gradle.properties
-      - name: "Commit flag to prevent snapshot publishing"
+      - name: "📩 Commit flag to prevent snapshot publishing"
         run: |
           git config user.name "${{ env.GIT_USER_NAME }}"
           git config user.email "${{ env.GIT_USER_EMAIL }}"
