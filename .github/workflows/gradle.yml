@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     outputs:
-      found_skip_publish: ${{ steps.skip_publish.outputs.value }}
+      found_skip_publish: ${{ steps.check_prevent_property.outputs.value }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
