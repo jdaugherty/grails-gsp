@@ -28,7 +28,7 @@ jobs:
       - name: "🔨 Run Build"
         id: build
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build --refresh-dependencies
       - name: "📤 Upload Artifact"
         if: success()
@@ -57,7 +57,7 @@ jobs:
           develocity-access-key: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
       - name: "📤 Publish Snapshot to repo.grails.org"
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
         run: ./gradlew publish
@@ -83,7 +83,7 @@ jobs:
       - name: "🔨 Build Docs"
         id: docs
         env:
-          SITEMESH_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew docs --refresh-dependencies
       - name: "📤 Publish docs to Github Pages"
         if: steps.docs.outcome == 'success'
