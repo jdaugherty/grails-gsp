@@ -24,6 +24,7 @@ import grails.core.GrailsApplication
 import grails.spring.BeanBuilder
 import grails.util.Holders
 import grails.validation.DeferredBindingActions
+import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.grails.core.lifecycle.ShutdownOperations
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
@@ -165,10 +166,11 @@ trait GrailsUnitTest {
         }
     }
 
+    @CompileDynamic
     private void cleanupPromiseFactory() {
         ClassLoader classLoader = getClass().classLoader
         if (ClassUtils.isPresent("grails.async.Promises", classLoader)) {
-            grails.async.Promises.promiseFactory = null
+            getClass().classLoader.loadClass("grails.async.Promises")['promiseFactory'] = null
         }
     }
 }

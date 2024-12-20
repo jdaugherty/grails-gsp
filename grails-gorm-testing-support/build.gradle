@@ -1,8 +1,6 @@
-
 dependencies {
-    api "org.grails:grails-plugin-domain-class:$grailsVersion"
-    api "org.grails:grails-datastore-gorm-test:$gormVersion"
+    api "org.grails:grails-plugin-domain-class"
+    api "org.grails:grails-datastore-gorm-test"
 
     api project(':grails-testing-support')
 }
-
