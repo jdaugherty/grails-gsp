@@ -9,8 +9,6 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    outputs:
-      found_skip_publish: ${{ steps.check_prevent_property.outputs.value }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,14 +16,6 @@ jobs:
     steps:
       - name: "📥 Checkout the repository"
         uses: actions/checkout@v4
-      - name: "🔍 Check if we should skip publish"
-        id: check_prevent_property
-        run: |
-          if grep -q '^preventSnapshotPublish=true' gradle.properties; then
-            echo "value=true" >> $GITHUB_OUTPUT
-          else
-            echo "value=false" >> $GITHUB_OUTPUT
-          fi
       - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
@@ -47,7 +37,7 @@ jobs:
           name: grails-gsp-SNAPSHOT.zip
           path: ./**/build/libs/*
   publish:
-    if: github.event_name == 'push' && needs.build.outputs.found_skip_publish != 'true'
+    if: github.event_name == 'push'
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -72,7 +62,7 @@ jobs:
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
         run: ./gradlew publish
   docs:
-    if: github.event_name == 'push' && needs.build.outputs.found_skip_publish != 'true'
+    if: github.event_name == 'push'
     needs: build
     runs-on: ubuntu-latest
     permissions:

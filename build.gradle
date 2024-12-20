@@ -13,9 +13,8 @@ buildscript {
 
 ext {
     isCiBuild = System.getenv().get("TRAVIS") == 'true' || (System.getenv().get("CI") as Boolean)
-    isGitHubRepoPublish = System.getenv("GITHUB_PUBLISH") == 'true'
-    isGrailsRepoPublish = project.projectVersion.endsWith('-SNAPSHOT') && !isGitHubRepoPublish
-    isReleaseVersion = !isGrailsRepoPublish && !isGitHubRepoPublish
+    isSnapshot = project.projectVersion.endsWith('-SNAPSHOT')
+    isReleaseVersion = !isSnapshot
 }
 
 group = "org.grails"
@@ -218,35 +217,21 @@ subprojects { subproject ->
         tasks.findByName("assemble").finalizedBy(sourcesJar, javadocJar)
 
         publishing {
-            if (isGrailsRepoPublish || isGitHubRepoPublish) {
+            if (isSnapshot) {
                 repositories {
                     maven {
                         credentials {
-                            if(isGrailsRepoPublish) {
                                 def u = System.getenv('ARTIFACTORY_USERNAME') ?: project.findProperty('artifactoryPublishUsername') ?: ''
                                 def p = System.getenv('ARTIFACTORY_PASSWORD') ?: project.findProperty('artifactoryPublishPassword') ?: ''
                                 username = u
                                 password = p
                             }
-                            else {
-                                def u = System.getenv('GITHUB_USERNAME') ?: ''
-                                def p = System.getenv('GITHUB_PASSWORD') ?: ''
-                                username = u
-                                password = p
-                            }
-                        }
-
-                        if(isGrailsRepoPublish) {
                             if (isGrailsPlugin) {
                                 url "https://repo.grails.org/grails/plugins3-snapshots-local"
                             } else {
                                 url "https://repo.grails.org/grails/libs-snapshots-local"
                             }
                         }
-                        else {
-                            url 'https://maven.pkg.github.com/grails/grails-gsp'
-                        }
-                    }
                 }
             }
 
@@ -283,23 +268,21 @@ subprojects { subproject ->
 
         subproject.afterEvaluate {
             signing {
-                required { isReleaseVersion || isGitHubRepoPublish }
+                required { isReleaseVersion }
                 sign publishing.publications.maven
             }
         }
 
         tasks.withType(Sign) {
-            onlyIf { isReleaseVersion || isGitHubRepoPublish }
+            onlyIf { isReleaseVersion }
         }
 
         //do not generate extra load on Nexus with new staging repository if signing fails
-        if(isReleaseVersion) {
             tasks.withType(io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository).configureEach {
                 shouldRunAfter(tasks.withType(Sign))
             }
         }
     }
-}
 
 def DOCUMENTATION_GROUP = 'Documentation'
 
