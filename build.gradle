@@ -49,6 +49,17 @@ allprojects {
                 url = 'https://repository.apache.org/content/repositories/snapshots'
             }
         }
+
+        if (System.getenv("GITHUB_MAVEN_PASSWORD") && !grailsVersion.endsWith('-SNAPSHOT')) {
+            System.out.println("Adding Grails Core Repo")
+            maven {
+                url = 'https://maven.pkg.github.com/grails/grails-core'
+                credentials {
+                    username = 'DOES_NOT_MATTER'
+                    password = System.getenv("GITHUB_MAVEN_PASSWORD")
+                }
+            }
+        }
     }
 }
 
@@ -89,15 +100,15 @@ subprojects { project ->
 
             dependencies {
                 api "org.apache.groovy:groovy:$groovyVersion"
-                api "org.slf4j:slf4j-api:$slf4jVersion"
+                api "org.slf4j:slf4j-api"
 
-                testImplementation "org.spockframework:spock-core:${spockVersion}", {
+                testImplementation "org.spockframework:spock-core", {
                     exclude module: 'groovy-all'
                 }
                 testRuntimeOnly "net.bytebuddy:byte-buddy:$bytebuddyVersion"
                 testRuntimeOnly "org.objenesis:objenesis:$objenesisVersion"
 
-                documentation "org.fusesource.jansi:jansi:$jansiVersion"
+                documentation "org.fusesource.jansi:jansi"
 
             }
 
@@ -111,22 +122,19 @@ subprojects { project ->
         }
     }
 
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    }
+    compileJava.options.release = 17
 
     dependencies {
-        implementation "com.github.javaparser:javaparser-core:$javaParserVersion"
-        compileOnly "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
+        implementation platform("org.grails:grails-bom:$grailsVersion")
+        implementation "com.github.javaparser:javaparser-core"
+        compileOnly "jakarta.servlet:jakarta.servlet-api"
 
-        testImplementation "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
-        testImplementation "org.apache.groovy:groovy-test-junit5:$groovyVersion"
-        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-        testImplementation "org.junit.platform:junit-platform-runner:$junitPlatformVersion"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
-        testRuntimeOnly "org.junit.platform:junit-platform-commons:$junitPlatformVersion"
+        testImplementation "jakarta.servlet:jakarta.servlet-api"
+        testImplementation "org.apache.groovy:groovy-test-junit5"
+        testImplementation "org.junit.jupiter:junit-jupiter-api"
+        testImplementation "org.junit.platform:junit-platform-runner"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+        testRuntimeOnly "org.junit.platform:junit-platform-commons"
     }
 
     tasks.withType(Test) {
@@ -270,9 +278,9 @@ subprojects { subproject ->
 
     dependencies {
         if (configurations.find { it.name == 'documentation' }) {
-            documentation "org.fusesource.jansi:jansi:$jansiVersion"
-            documentation "jline:jline:$jlineVersion"
-            documentation "com.github.javaparser:javaparser-core:$javaParserVersion"
+            documentation "org.fusesource.jansi:jansi"
+            documentation "jline:jline"
+            documentation "com.github.javaparser:javaparser-core"
             documentation "org.apache.groovy:groovy:${groovyVersion}"
             documentation "org.apache.groovy:groovy-templates:${groovyVersion}"
             documentation "org.apache.groovy:groovy-ant:$groovyVersion"
@@ -339,9 +347,9 @@ configurations {
 dependencies {
     if (configurations.find { it.name == 'documentation' }) {
         documentation "info.picocli:picocli:$picocliVersion"
-        documentation "org.fusesource.jansi:jansi:$jansiVersion"
-        documentation "jline:jline:$jlineVersion"
-        documentation "com.github.javaparser:javaparser-core:$javaParserVersion"
+        documentation "org.fusesource.jansi:jansi"
+        documentation "jline:jline"
+        documentation "com.github.javaparser:javaparser-core"
         documentation "org.apache.groovy:groovy:$groovyVersion"
         documentation "org.apache.groovy:groovy-templates:$groovyVersion"
         documentation "org.apache.groovy:groovy-ant:$groovyVersion"

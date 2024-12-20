@@ -18,7 +18,7 @@ jobs:
       - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: liberica
           java-version: 17
       - name: "🗄️ Cache local Maven repository"
         uses: actions/cache@v4
@@ -108,6 +108,7 @@ jobs:
         env:
           DEVELOCITY_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
           DEVELOCITY_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
+          GITHUB_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd groovy
           ./gradlew pTML -x groovydoc -x javadoc -x javadocAll -x groovydocAll -x asciidoc -x docGDK
@@ -121,7 +122,7 @@ jobs:
       - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: liberica
           java-version: 17
       - name: "🐘 Setup Gradle"
         uses: gradle/actions/setup-gradle@v4
@@ -138,6 +139,7 @@ jobs:
         env:
           DEVELOCITY_BUILD_CACHE_NODE_USER: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_USER }}
           DEVELOCITY_BUILD_CACHE_NODE_KEY: ${{ secrets.GRADLE_ENTERPRISE_BUILD_CACHE_NODE_KEY }}
+          GITHUB_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: >
           ./gradlew build
           -PgroovyVersion=${{needs.build_groovy.outputs.groovyVersion}}
