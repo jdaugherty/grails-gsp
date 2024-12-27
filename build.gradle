@@ -346,6 +346,7 @@ configurations {
 
 dependencies {
     if (configurations.find { it.name == 'documentation' }) {
+        documentation platform("org.grails:grails-bom:$grailsVersion")
         documentation "info.picocli:picocli:$picocliVersion"
         documentation "org.fusesource.jansi:jansi"
         documentation "jline:jline"
