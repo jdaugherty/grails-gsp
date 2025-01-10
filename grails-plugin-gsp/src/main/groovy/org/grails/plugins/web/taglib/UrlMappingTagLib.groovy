@@ -69,6 +69,10 @@ class UrlMappingTagLib implements TagLibrary{
         }
     }
 
+    private void appendClass(Map linkTagAttrs, String cssClass) {
+        [linkTagAttrs.get('class')?:'',cssClass].join(' ')
+    }
+
     /**
      * Creates next/previous links to support pagination for the current controller.<br/>
      *
@@ -139,6 +143,11 @@ class UrlMappingTagLib implements TagLibrary{
         if (attrs.id != null) {
             linkTagAttrs.id = attrs.id
         }
+        if (attrs.containsKey('class')) {
+            linkTagAttrs.put('class', attrs.get('class'))
+        }
+        String activeClass = attrs.activeClass?:'currentStep'
+
         if (attrs.fragment != null) {
             linkTagAttrs.fragment = attrs.fragment
         }
@@ -152,7 +161,7 @@ class UrlMappingTagLib implements TagLibrary{
 
         // display previous link when not on firststep unless omitPrev is true
         if (currentstep > firststep && !attrs.boolean('omitPrev')) {
-            linkTagAttrs.put('class', 'prevLink')
+            appendClass(linkTagAttrs, 'prevLink')
             linkParams.offset = offset - max
             writer << callLink((Map)linkTagAttrs.clone()) {
                 (attrs.prev ?: messageSource.getMessage('paginate.prev', null, messageSource.getMessage('default.paginate.prev', null, 'Previous', locale), locale))
@@ -161,7 +170,7 @@ class UrlMappingTagLib implements TagLibrary{
 
         // display steps when steps are enabled and laststep is not firststep
         if (steps && laststep > firststep) {
-            linkTagAttrs.put('class', 'step')
+            appendClass(linkTagAttrs, 'step')
 
             // determine begin and endstep paging variables
             int beginstep = currentstep - (Math.round(maxsteps / 2.0d) as int) + (maxsteps % 2)
@@ -192,7 +201,7 @@ class UrlMappingTagLib implements TagLibrary{
             // display paginate steps
             (beginstep..endstep).each { int i ->
                 if (currentstep == i) {
-                    writer << "<span class=\"currentStep\">${i}</span>"
+                    writer << "<span class=\"${[attrs.get('class')?:'',activeClass].join(' ')}\">${i}</span>"
                 }
                 else {
                     linkParams.offset = (i - 1) * max
@@ -213,7 +222,7 @@ class UrlMappingTagLib implements TagLibrary{
 
         // display next link when not on laststep unless omitNext is true
         if (currentstep < laststep && !attrs.boolean('omitNext')) {
-            linkTagAttrs.put('class', 'nextLink')
+            appendClass(linkTagAttrs, 'nextLink')
             linkParams.offset = offset + max
             writer << callLink((Map)linkTagAttrs.clone()) {
                 (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, messageSource.getMessage('default.paginate.next', null, 'Next', locale), locale))
