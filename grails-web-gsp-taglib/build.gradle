@@ -1,4 +1,11 @@
+version project.projectVersion
+group "org.grails"
+
+apply from: rootProject.file('gradle/java-config.gradle')
+
 dependencies {
-    compileOnly "jakarta.servlet:jakarta.servlet-api"
     api project(':grails-web-jsp')
 }
+
+apply from: rootProject.file('gradle/test.gradle')
+apply from: rootProject.file('gradle/publish.gradle')

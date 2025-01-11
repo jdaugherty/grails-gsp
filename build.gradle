@@ -1,18 +1,15 @@
 buildscript {
     repositories {
-        mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
-        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "org.grails:grails-docs:${project.ext.properties.grailsDocsVersion ?: grailsVersion}"
+        classpath platform("org.grails:grails-bom:$grailsVersion")
         classpath "io.github.gradle-nexus:publish-plugin:2.0.0"
     }
 }
 
 ext {
-    isCiBuild = System.getenv().get("TRAVIS") == 'true' || (System.getenv().get("CI") as Boolean)
+    isCiBuild = (System.getenv().get("CI") as Boolean)
     isSnapshot = project.projectVersion.endsWith('-SNAPSHOT')
     isReleaseVersion = !isSnapshot
 }
@@ -21,12 +18,6 @@ group = "org.grails"
 version project.projectVersion
 
 apply plugin: 'java-library'
-apply plugin: 'groovy'
-
-ext.set('signing.keyId', project.findProperty('signing.keyId') ?: System.getenv('SIGNING_KEY'))
-ext.set('signing.secretKeyRingFile', project.findProperty('signing.secretKeyRingFile') ?: "${System.properties['user.home']}${File.separator}.gnupg${File.separator}secring.gpg")
-ext.set('signing.password', project.findProperty('signing.password') ?: System.getenv('SIGNING_PASSPHRASE'))
-
 apply plugin: 'idea'
 
 allprojects { prj ->
@@ -41,19 +32,8 @@ allprojects { prj ->
             }
         }
 
-        if (System.getenv("GITHUB_MAVEN_PASSWORD") && prj.name == 'grails-plugin-gsp' && !sitemeshVersion.endsWith('-SNAPSHOT')) {
-            System.out.println("Adding Sitemesh Repo")
-            maven {
-                url = 'https://maven.pkg.github.com/codeconsole/grails-plugin-sitemesh3'
-                credentials {
-                    username = 'DOES_NOT_MATTER'
-                    password = System.getenv("GITHUB_MAVEN_PASSWORD")
-                }
-            }
-        }
-
         if (System.getenv("GITHUB_MAVEN_PASSWORD") && !grailsVersion.endsWith('-SNAPSHOT')) {
-            System.out.println("Adding Grails Core Repo")
+            System.out.println("Adding Grails Core Repo for project: ${prj.name}")
             maven {
                 url = 'https://maven.pkg.github.com/grails/grails-core'
                 credentials {
@@ -63,368 +43,11 @@ allprojects { prj ->
             }
         }
     }
+
+    apply plugin: 'groovy'
 }
-
-subprojects { subproject ->
-
-    version project.projectVersion
-
-    ext {
-        userOrg = "grails"
-        isGrailsPlugin = name.startsWith('grails-plugin')
-        isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
-    }
-
-    if (isGrailsPlugin) {
-        group "org.grails.plugins"
-    } else {
-        group "org.grails"
-    }
-
-    if (subproject.name.startsWith("examples")) {
-        apply plugin: "org.grails.grails-web"
-    } else if (isGrailsPlugin) {
-        apply plugin: "org.grails.grails-plugin"
-    } else {
-        apply plugin: 'groovy'
-        apply plugin: 'java-library'
-
-        configurations {
-            documentation
-        }
-        
-        dependencies {
-            implementation platform("org.grails:grails-bom:$grailsVersion")
-
-            api "org.apache.groovy:groovy:$groovyVersion"
-
-            testImplementation "org.spockframework:spock-core"
-            testImplementation "org.springframework:spring-test"
-
-            documentation platform("org.grails:grails-bom:$grailsVersion")
-            documentation "org.fusesource.jansi:jansi"
-        }
-
-        test {
-            testLogging {
-                events "passed", "skipped", "failed", "standardOut", "standardError"
-            }
-        }
-
-        groovydoc.classpath += (configurations.documentation + configurations.compileClasspath)
-
-        dependencies {
-            documentation "org.apache.groovy:groovy-dateutil:$groovyVersion"
-        }
-    }
-
-    apply plugin: 'idea'
-    apply plugin: 'java-library'
-
-    compileJava.options.release = 17
-
-    dependencies {
-        compileOnly "jakarta.servlet:jakarta.servlet-api"
-
-        testImplementation "jakarta.servlet:jakarta.servlet-api"
-        compileOnly "jakarta.persistence:jakarta.persistence-api"
-        testImplementation "org.apache.groovy:groovy-test-junit5:$groovyVersion"
-        testImplementation "org.junit.jupiter:junit-jupiter-api"
-        testImplementation "org.junit.platform:junit-platform-runner"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
-    }
-
-    tasks.withType(Test) {
-        useJUnitPlatform()
-        testLogging {
-            showStandardStreams = true
-            exceptionFormat = 'full'
-        }
-        if (isCiBuild) {
-            maxParallelForks = 2
-        } else {
-            maxParallelForks = 4
-        }
-    }
-
-    configurations {
-        documentation
-    }
-
-    dependencies {
-        if (configurations.find { subproject.name == 'documentation' }) {
-            documentation "org.fusesource.jansi:jansi"
-            documentation "jline:jline"
-            documentation "com.github.javaparser:javaparser-core"
-            documentation "org.apache.groovy:groovy:$groovyVersion"
-            documentation "org.apache.groovy:groovy-ant:$groovyVersion"
-            documentation "org.apache.groovy:groovy-dateutil:$groovyVersion"
-            documentation "org.apache.groovy:groovy-cli-picocli:$groovyVersion"
-            documentation "org.asciidoctor:asciidoctorj"
-        }
-    }
-
-    groovydoc.classpath += configurations.documentation
-
-    ext {
-        isExample = subproject.name.startsWith('example')
-        isGrailsPlugin = subproject.name.startsWith('grails-plugin')
-        pomInfo = {
-            delegate.name subproject.title
-            delegate.description subproject.projectDesc
-            delegate.url projectUrl
-
-            delegate.licenses {
-                delegate.license {
-                    delegate.name 'The Apache Software License, Version 2.0'
-                    delegate.url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    delegate.distribution 'repo'
-                }
-            }
-
-            delegate.scm {
-                delegate.url "scm:git@github.com:${githubSlug}.git"
-                delegate.connection "scm:git@github.com:${githubSlug}.git"
-                delegate.developerConnection "scm:git@github.com:${githubSlug}.git"
-            }
-
-            if (developers) {
-                delegate.developers {
-                    for (dev in developers.split(',')) {
-                        delegate.developer {
-                            delegate.id dev.toLowerCase().replace(' ', '')
-                            delegate.name dev
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (!isExample) {
-
-        apply plugin: 'maven-publish'
-        apply plugin: 'signing'
-
-        Task sourcesJar = subproject.tasks.findByName("sourcesJar")
-        if (!sourcesJar) {
-            sourcesJar = tasks.create("sourcesJar", Jar) {
-                archiveClassifier = 'sources'
-                group = BasePlugin.BUILD_GROUP
-                description = 'Assembles a jar archive containing the main sources of this project.'
-                from subproject.sourceSets.main.allSource
-            }
-        }
-
-        Task javadocJar = subproject.tasks.findByName("javadocJar")
-        if (!javadocJar) {
-            javadocJar = tasks.create("javadocJar", Jar) {
-                archiveClassifier = 'javadoc'
-                group = BasePlugin.BUILD_GROUP
-                description = 'Assembles a jar archive containing the generated Javadoc API documentation of this project.'
-                from subproject.plugins.hasPlugin(GroovyPlugin) ? subproject.tasks.getByName(GroovyPlugin.GROOVYDOC_TASK_NAME) : subproject.tasks.getByName(JavaPlugin.JAVADOC_TASK_NAME)
-            }
-        }
-        tasks.findByName("assemble").finalizedBy(sourcesJar, javadocJar)
-
-        publishing {
-            if (isSnapshot) {
-                repositories {
-                    maven {
-                        credentials {
-                                def u = System.getenv('ARTIFACTORY_USERNAME') ?: project.findProperty('artifactoryPublishUsername') ?: ''
-                                def p = System.getenv('ARTIFACTORY_PASSWORD') ?: project.findProperty('artifactoryPublishPassword') ?: ''
-                                username = u
-                                password = p
-                            }
-                            if (isGrailsPlugin) {
-                                url "https://repo.grails.org/grails/plugins3-snapshots-local"
-                            } else {
-                                url "https://repo.grails.org/grails/libs-snapshots-local"
-                            }
-                        }
-                }
-            }
-
-            publications {
-                maven(MavenPublication) {
-                    if (isGrailsPlugin) {
-                        artifactId(subproject.name - 'grails-plugin-')
-                    } else if (subproject.name.contains('/')) {
-                        artifactId(subproject.name.substring(subproject.name.indexOf('/') + 1))
-                    }
-
-                    from components.java
-
-                    artifact sourcesJar
-                    artifact javadocJar
-
-                    if (isGrailsPlugin) {
-                        artifact source: "${subproject.buildDir}/classes/groovy/main/META-INF/grails-plugin.xml",
-                                classifier: "plugin",
-                                extension: 'xml'
-                    }
-                    pom.withXml {
-                        def xml = asNode()
-
-                        xml.children().last() + pomInfo
-                        // dependency management shouldn't be included
-                        def n = xml.get("dependencyManagement")
-                        if (n) xml.remove(n)
-                    }
-
-                }
-            }
-        }
-
-        subproject.afterEvaluate {
-            signing {
-                required { isReleaseVersion }
-                sign publishing.publications.maven
-            }
-        }
-
-        tasks.withType(Sign) {
-            onlyIf { isReleaseVersion }
-        }
-
-        //do not generate extra load on Nexus with new staging repository if signing fails
-            tasks.withType(io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository).configureEach {
-                shouldRunAfter(tasks.withType(Sign))
-            }
-        }
-    }
-
-def DOCUMENTATION_GROUP = 'Documentation'
-
-def commonGithubOrg = 'grails'
-def commonGithubSlug = 'grails-common-build'
-def commonBranch = 'master'
-def docResourcesDir = "${buildDir}/resources/${commonGithubSlug}-${commonBranch}/src/main/resources"
-
-task prepareDocResources {
-    group = DOCUMENTATION_GROUP
-    description = 'Downloads common documentation resoruces and unzips them to build folder'
-    doLast {
-        ant.mkdir(dir: buildDir)
-        ant.get(src: "https://github.com/${commonGithubOrg}/${commonGithubSlug}/archive/${commonBranch}.zip", dest: "${buildDir}/resources.zip")
-        ant.unzip(src: "${buildDir}/resources.zip", dest: "${buildDir}/resources")
-    }
-}
-
-task copyLocalDocResources(type: Copy, dependsOn: prepareDocResources) {
-    group = DOCUMENTATION_GROUP
-    description = 'Copy local resources to build folder'
-    mustRunAfter prepareDocResources
-    from('src/main/docs/resources')
-    into docResourcesDir
-}
-
-configurations {
-    documentation
-}
-
-dependencies {
-    if (configurations.find { it.name == 'documentation' }) {
-        documentation platform("org.grails:grails-bom:$grailsVersion")
-        documentation "info.picocli:picocli"
-        documentation "org.fusesource.jansi:jansi"
-        documentation "jline:jline"
-        documentation "com.github.javaparser:javaparser-core"
-        documentation "org.apache.groovy:groovy:$groovyVersion"
-        documentation "org.apache.groovy:groovy-ant:$groovyVersion"
-        documentation "org.apache.groovy:groovy-cli-picocli:$groovyVersion"
-        documentation "org.asciidoctor:asciidoctorj"
-    }
-}
-
-
-def cleanTask = project.tasks.findByName("clean")
-if (cleanTask == null) {
-    task clean(type: Delete) {
-        delete(buildDir)
-    }
-} else {
-    cleanTask.doLast {
-        ant.delete(dir: "build/docs")
-    }
-}
-
-tasks.withType(Groovydoc) {
-    group = DOCUMENTATION_GROUP
-    docTitle = "${project.title} - ${project.version}"
-    destinationDir = project.file("build/docs/api")
-    def files = []
-    project.rootProject.subprojects
-            .findAll { it.name != 'docs' && !it.name.startsWith('examples') }
-            .each { subproject ->
-                if (subproject.file('src/main/groovy').exists()) {
-                    files += subproject.files("src/main/groovy")
-                }
-            }
-    if (project.file('src/main/groovy').exists()) {
-        files += project.files("src/main/groovy")
-    }
-    source = files
-    classpath += configurations.documentation
-}
-
-task publishGuide(type: grails.doc.gradle.PublishGuide) {
-    group = DOCUMENTATION_GROUP
-    description = 'Generate Guide'
-    dependsOn copyLocalDocResources, compileGroovy, groovydoc, compileJava, processResources
-
-    targetDir = project.file("${buildDir}/docs")
-    sourceRepo = "https://github.com/${githubSlug}/edit/${githubBranch}/src/main/docs"
-    sourceDir = new File(projectDir, "src/main/docs")
-    propertiesFiles = [new File(rootProject.projectDir, "gradle.properties")]
-    asciidoc = true
-    resourcesDir = project.file(docResourcesDir)
-    properties = ['safe'     : 'UNSAFE',
-                  'version'  : project.version,
-                  'subtitle' : project.projectDesc,
-                  'api'      : '../api',
-                  'sourceDir': rootProject.projectDir.absolutePath,
-                  'sourcedir': rootProject.projectDir.absolutePath,
-                  'javaee'   : 'https://docs.oracle.com/javaee/7/api/',
-                  'jakartaee': 'https://jakarta.ee/specifications/platform/10/apidocs/',
-                  'javase'   : 'https://docs.oracle.com/en/java/javase/17/docs/api/index.html',
-                  'groovyapi': 'http://docs.groovy-lang.org/latest/html/gapi/',
-                  'grailsapi': 'http://docs.grails.org/latest/api/',
-                  'gormapi'  : 'http://gorm.grails.org/latest/api/',
-                  'springapi': 'https://docs.spring.io/spring/docs/current/javadoc-api/']
-    doLast {
-        ant.move(file: "${project.buildDir}/docs/guide/single.html",
-                tofile: "${project.buildDir}/docs/guide/index.html", overwrite: true)
-        new File(project.buildDir, "docs/index.html").text = '''
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en">
-<head>
-<meta http-equiv="refresh" content="0; url=guide/index.html" />
-</head>
-
-</body>
-</html>
-'''
-    }
-}
-
-task docs(dependsOn: [groovydoc, publishGuide]) {
-    group = DOCUMENTATION_GROUP
-}
-
-def assembleTask = project.tasks.findByName("assemble")
-if (assembleTask == null) {
-    task assemble(dependsOn: docs, type: Zip) {
-        baseName = "${project.name}-${project.version}"
-        destinationDir = new File(project.buildDir, "distributions")
-        from project.files("${buildDir}/docs")
-    }
-}
-
 
 if (isReleaseVersion) {
-    apply plugin: 'maven-publish'
     apply plugin: "io.github.gradle-nexus.publish-plugin"
 
     nexusPublishing {
@@ -444,20 +67,11 @@ if (isReleaseVersion) {
             delayBetween.set(java.time.Duration.ofMillis(4000))
         }
     }
-}
 
-tasks.named('publishGuide') {
-    // Override value defined in grails/grails-common-build/common-docs.gradle
-    it.properties['commandLineRef'] = "https://docs.grails.org/$grailsVersion/ref/Command%20Line"
-    it.properties['controllersRef'] = "https://docs.grails.org/$grailsVersion/ref/Controllers"
-    it.properties['grailsapi'] = "https://docs.grails.org/$grailsVersion/api/"
-    it.properties['grailsdocs'] = "https://docs.grails.org/$grailsVersion/"
-    it.properties['groovyapi'] = "https://docs.groovy-lang.org/$groovyVersion/html/gapi/"
-    it.properties['groovyjdk'] = "https://docs.groovy-lang.org/$groovyVersion/html/groovy-jdk/"
-    it.properties['javase'] = 'https://docs.oracle.com/en/java/javase/11/docs/api/'
-}
-
-boolean isNonStable(String version) {
-    version ==~ /(?i).+(-|\.?)(b|M|RC|Dev)\d?.*/ || ['alpha', 'beta', 'milestone', 'rc', 'cr', 'm', 'preview', 'b', 'ea'].any { qualifier -> version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
+    //do not generate extra load on Nexus with new staging repository if signing fails
+    tasks.withType(io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository).configureEach {
+        shouldRunAfter(tasks.withType(Sign))
     }
 }
+
+apply from: rootProject.layout.projectDirectory.file('gradle/aggregate-groovydoc.gradle')

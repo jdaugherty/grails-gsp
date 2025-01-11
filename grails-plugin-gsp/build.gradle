@@ -1,6 +1,27 @@
-ext {
-    isCiBuild = System.getenv().get("TRAVIS") == 'true' || System.getenv().get("CI") as Boolean
+buildscript {
+    repositories {
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath platform("org.grails:grails-bom:$grailsVersion")
+        classpath "org.grails:grails-gradle-plugin"
+    }
 }
+
+version project.projectVersion
+group "org.grails.plugins"
+
+apply plugin: "org.grails.grails-plugin"
+
+apply from: rootProject.file('gradle/java-config.gradle')
+
+ext {
+    testMaxParallelFork = isCiBuild ? 1 : 4
+    testForkEvery = isCiBuild ? 10 : 20
+    testJvmArgs = ['-Xmx1536M']
+}
+
+// Fixes JSP tests
 configurations.all {
     resolutionStrategy.dependencySubstitution.all { DependencySubstitution dependency ->
         if (dependency.requested instanceof ModuleComponentSelector) {
@@ -13,42 +34,28 @@ configurations.all {
         }
     }
 }
+
 dependencies {
-    compileOnly "jakarta.servlet:jakarta.servlet-api"
     api project(":grails-web-gsp-taglib")
-    api "org.sitemesh:grails-plugin-sitemesh3:$sitemeshVersion"
+    api project(":grails-plugin-sitemesh3")
 
     runtimeOnly(project(":grails-web-jsp"))
     api "org.apache.commons:commons-text:$commonsTextVersion"
-    api "org.grails:grails-plugin-codecs:$grailsVersion"
+    api "org.grails:grails-plugin-codecs"
     astImplementation "org.grails:grails-web"
     astImplementation "org.grails:grails-plugin-controllers"
 
-    testImplementation "org.grails:grails-web-testing-support"
-    testImplementation "org.grails:grails-testing-support"
-    testImplementation "org.grails:grails-gorm-testing-support"
-
-    testRuntimeOnly "org.grails.plugins:async"
     testImplementation "jakarta.annotation:jakarta.annotation-api"
-    testImplementation "jakarta.servlet.jsp:jakarta.servlet.jsp-api:${jspApiVersion}"
-    testRuntimeOnly "org.glassfish.web:jakarta.servlet.jsp.jstl:${jstlVersion}"
-    testImplementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:${jstlVersion}"
+    testImplementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:$jstlVersion"
+    testImplementation "jakarta.servlet.jsp:jakarta.servlet.jsp-api:$jspApiVersion"
+    testImplementation "org.grails:grails-gorm-testing-support"
+    testImplementation "org.grails:grails-testing-support"
+    testImplementation "org.grails:grails-web-testing-support"
 
+    testRuntimeOnly "org.glassfish.web:jakarta.servlet.jsp.jstl:$jstlVersion"
+    testRuntimeOnly "org.grails.plugins:async"
     testRuntimeOnly "org.grails:grails-plugin-url-mappings"
 }
-test {
-    if (isCiBuild) {
-        maxParallelForks = 1
-        forkEvery = 10
-    }
-    else {
-        maxParallelForks = 4
-        forkEvery = 20
-    }
 
-    jvmArgs = ['-Xmx1536M']
-    afterSuite {
-        System.out.print('.')
-        System.out.flush()
-    }
-}
+apply from: rootProject.file('gradle/test.gradle')
+apply from: rootProject.file('gradle/publish.gradle')

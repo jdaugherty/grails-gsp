@@ -1,5 +1,12 @@
+version project.projectVersion
+group "org.grails"
+
+apply from: rootProject.file('gradle/java-config.gradle')
+
 dependencies {
-    documentation platform("org.grails:grails-bom:$grailsVersion")
-    api "org.grails:grails-core:$grailsVersion"
-    api "org.grails:grails-encoder:$grailsVersion"
+    api "org.grails:grails-core"
+    api "org.grails:grails-encoder"
 }
+
+apply from: rootProject.file('gradle/test.gradle')
+apply from: rootProject.file('gradle/publish.gradle')

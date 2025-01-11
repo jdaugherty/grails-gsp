@@ -1,11 +1,16 @@
+version project.projectVersion
+group "org.grails"
+
+apply from: rootProject.file('gradle/java-config.gradle')
+
 dependencies {
-    api "org.grails:grails-web-common:$grailsVersion"
+    api "org.grails:grails-web-common"
     api project(":grails-web-gsp")
 
-
-    compileOnly "jakarta.servlet:jakarta.servlet-api"
     // Required for JSP support
     compileOnly "jakarta.servlet.jsp:jakarta.servlet.jsp-api:$jspApiVersion"
     compileOnly "jakarta.el:jakarta.el-api:$elApiVersion"
-
 }
+
+apply from: rootProject.file('gradle/test.gradle')
+apply from: rootProject.file('gradle/publish.gradle')

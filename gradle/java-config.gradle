@@ -1,0 +1,16 @@
+apply plugin: 'idea'
+apply plugin: 'java-library'
+
+compileJava.options.release = 17
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+dependencies {
+    implementation platform("org.grails:grails-bom:$grailsVersion")
+    api "org.apache.groovy:groovy:$groovyVersion"
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
+    compileOnly "jakarta.persistence:jakarta.persistence-api"
+}
