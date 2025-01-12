@@ -69,8 +69,9 @@ class UrlMappingTagLib implements TagLibrary{
         }
     }
 
-    private void appendClass(Map linkTagAttrs, String cssClass) {
-        [linkTagAttrs.get('class')?:'',cssClass].join(' ')
+    Map appendClass(Map attrs, String cssClass) {
+        attrs['class'] = [attrs['class'] ?: '', cssClass].join(' ').trim()
+        attrs
     }
 
     /**
@@ -161,16 +162,15 @@ class UrlMappingTagLib implements TagLibrary{
 
         // display previous link when not on firststep unless omitPrev is true
         if (currentstep > firststep && !attrs.boolean('omitPrev')) {
-            appendClass(linkTagAttrs, 'prevLink')
             linkParams.offset = offset - max
-            writer << callLink((Map)linkTagAttrs.clone()) {
+            writer << callLink(appendClass((Map) linkTagAttrs.clone(), 'prevLink')) {
                 (attrs.prev ?: messageSource.getMessage('paginate.prev', null, messageSource.getMessage('default.paginate.prev', null, 'Previous', locale), locale))
             }
         }
 
         // display steps when steps are enabled and laststep is not firststep
         if (steps && laststep > firststep) {
-            appendClass(linkTagAttrs, 'step')
+            Map stepAttrs = appendClass((Map) linkTagAttrs.clone(), 'step')
 
             // determine begin and endstep paging variables
             int beginstep = currentstep - (Math.round(maxsteps / 2.0d) as int) + (maxsteps % 2)
@@ -191,7 +191,7 @@ class UrlMappingTagLib implements TagLibrary{
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep && !attrs.boolean('omitFirst')) {
                 linkParams.offset = 0
-                writer << callLink((Map)linkTagAttrs.clone()) {firststep.toString()}
+                writer << callLink((Map)stepAttrs.clone()) {firststep.toString()}
             }
             //show a gap if beginstep isn't immediately after firststep, and if were not omitting first or rev
             if (beginstep > firststep+1 && (!attrs.boolean('omitFirst') || !attrs.boolean('omitPrev')) ) {
@@ -201,11 +201,11 @@ class UrlMappingTagLib implements TagLibrary{
             // display paginate steps
             (beginstep..endstep).each { int i ->
                 if (currentstep == i) {
-                    writer << "<span class=\"${[attrs.get('class')?:'',activeClass].join(' ')}\">${i}</span>"
+                    writer << "<span class=\"${[attrs.get('class')?:'',activeClass].join(' ').trim()}\">${i}</span>"
                 }
                 else {
                     linkParams.offset = (i - 1) * max
-                    writer << callLink((Map)linkTagAttrs.clone()) {i.toString()}
+                    writer << callLink((Map)stepAttrs.clone()) {i.toString()}
                 }
             }
 
@@ -216,15 +216,14 @@ class UrlMappingTagLib implements TagLibrary{
             // display laststep link when endstep is not laststep
             if (endstep < laststep && !attrs.boolean('omitLast')) {
                 linkParams.offset = (laststep - 1) * max
-                writer << callLink((Map)linkTagAttrs.clone()) { laststep.toString() }
+                writer << callLink((Map)stepAttrs.clone()) { laststep.toString() }
             }
         }
 
         // display next link when not on laststep unless omitNext is true
         if (currentstep < laststep && !attrs.boolean('omitNext')) {
-            appendClass(linkTagAttrs, 'nextLink')
             linkParams.offset = offset + max
-            writer << callLink((Map)linkTagAttrs.clone()) {
+            writer << callLink(appendClass((Map) linkTagAttrs.clone(), 'nextLink')) {
                 (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, messageSource.getMessage('default.paginate.next', null, 'Next', locale), locale))
             }
         }
