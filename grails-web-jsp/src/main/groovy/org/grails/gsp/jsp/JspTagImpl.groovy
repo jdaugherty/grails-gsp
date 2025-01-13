@@ -235,10 +235,10 @@ class JspTagImpl implements JspTag {
 
 class JspFragmentImpl extends JspFragment {
 
-    private final JspContext pageContext
-    private final Writer body
+    GroovyPagesPageContext pageContext
+    FastStringWriter body
 
-    JspFragmentImpl(JspContext pageContext, Writer body) {
+    JspFragmentImpl(GroovyPagesPageContext pageContext, FastStringWriter body) {
         this.pageContext = pageContext
         this.body = body
     }
