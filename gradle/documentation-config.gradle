@@ -24,7 +24,7 @@ tasks.register('groovydoc', Groovydoc) {
     includeAuthor = true
     includeMainForScripts = false
     processScripts = false
-    dependsOn = [tasks.named('cleanDocs')] + groovyDocProjects.collect { it.tasks.named('groovydoc') }
+    dependsOn([':cleanDocs'] + groovyDocProjects.collect { "$it.name:groovydoc" })
     destinationDir = project.layout.buildDirectory.dir('docs/api').get().asFile
     source = groovyDocProjects.sourceSets.main.groovy.srcDirs
     doLast { delete(rootProject.layout.buildDirectory.dir('tmp')) }
