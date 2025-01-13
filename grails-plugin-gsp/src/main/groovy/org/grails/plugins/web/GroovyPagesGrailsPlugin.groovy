@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2024 the original author or authors.
+ * Copyright 2004-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,7 +114,8 @@ class GroovyPagesGrailsPlugin extends Plugin {
         RuntimeSpringConfiguration spring = springConfig
 
         // resolves JSP tag libraries
-        if(ClassUtils.isPresent("org.grails.gsp.jsp.TagLibraryResolverImpl", application.classLoader)) {
+        boolean resolveJspTagLibraries = ClassUtils.isPresent('org.grails.gsp.jsp.TagLibraryResolverImpl', application.classLoader)
+        if (resolveJspTagLibraries) {
             jspTagLibraryResolver(TagLibraryResolverImpl)
         }
 
@@ -198,7 +199,9 @@ class GroovyPagesGrailsPlugin extends Plugin {
                 reloadEnabled = enableReload
             }
             tagLibraryLookup = gspTagLibraryLookup
-            jspTagLibraryResolver = jspTagLibraryResolver
+            if (resolveJspTagLibraries) {
+                jspTagLibraryResolver = jspTagLibraryResolver
+            }
             cacheResources = enableCacheResources
         }
 
