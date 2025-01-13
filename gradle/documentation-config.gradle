@@ -1,0 +1,43 @@
+configurations.register('documentation')
+
+dependencies {
+    documentation "org.apache.groovy:groovy-groovydoc:4.0.24"
+    documentation "org.apache.groovy:groovy-ant:4.0.24"
+}
+
+tasks.register('cleanDocs', Delete) {
+    group = 'documentation'
+    delete(rootProject.layout.buildDirectory.dir('docs'))
+}
+
+tasks.register('groovydoc', Groovydoc) {
+    group = 'documentation'
+    description = 'Copies Groovy API Documentation for all supporting projects'
+    Set<Project> groovyDocProjects = rootProject.subprojects.findAll {
+        it.name != 'docs' && !it.name.startsWith('examples')
+    }
+    def groovydocClasspath = files(configurations.documentation + groovyDocProjects.configurations.compileClasspath)
+    classpath = groovydocClasspath
+    groovyClasspath = groovydocClasspath
+    docTitle = "Groovy Server Pages (GSP) - ${project.name} - ${project.version}"
+    access = GroovydocAccess.PRIVATE
+    includeAuthor = true
+    includeMainForScripts = false
+    processScripts = false
+    dependsOn = [tasks.named('cleanDocs')] + groovyDocProjects.collect { it.tasks.named('groovydoc') }
+    destinationDir = project.layout.buildDirectory.dir('docs/api').get().asFile
+    source = groovyDocProjects.sourceSets.main.groovy.srcDirs
+    doLast { delete(rootProject.layout.buildDirectory.dir('tmp')) }
+}
+
+tasks.register('docs') {
+    group = 'documentation'
+    dependsOn(':groovydoc', 'docs:publishGuide')
+    finalizedBy('copyGuide')
+}
+
+tasks.register('copyGuide', Copy) {
+    group = 'documentation'
+    from(project(':docs').tasks.named('publishGuide'))
+    into rootProject.layout.buildDirectory.dir('docs')
+}
