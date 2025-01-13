@@ -1,10 +1,7 @@
-
-import grails.plugin.geb.ContainerGebConfiguration
 import grails.plugin.geb.ContainerGebSpec
 import grails.testing.mixin.integration.Integration
 
 @Integration
-@ContainerGebConfiguration
 class SitemeshSpec extends ContainerGebSpec {
 
     void "forced layout"() {
@@ -12,7 +9,7 @@ class SitemeshSpec extends ContainerGebSpec {
         browser.go 'demo/index'
 
         then:
-        browser.driver.pageSource.contains('''Do you like BootStrap?''')
+        browser.driver.pageSource.contains('Do you like BootStrap?')
     }
 
     void "decorator chaining"() {
@@ -20,7 +17,7 @@ class SitemeshSpec extends ContainerGebSpec {
         browser.go 'demo/chaining'
 
         then:
-        browser.driver.pageSource.contains('''This is so cool.''')
+        browser.driver.pageSource.contains('This is so cool.')
     }
 
     void "jsp demo"() {
@@ -28,10 +25,10 @@ class SitemeshSpec extends ContainerGebSpec {
         browser.go 'demo/jsp'
 
         then:
-        def container = $('div.container')
+        def container = browser.$('div.container')
         container
 
-        browser.driver.pageSource.contains('''Hello World, I am a JSP page!''')
+        browser.driver.pageSource.contains('Hello World, I am a JSP page!')
     }
 
     void "text"() {
