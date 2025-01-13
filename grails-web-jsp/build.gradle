@@ -56,7 +56,7 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-autoconfigure'
 */
     }
-    implementation 'org.grails:grails-encoder', { // StreamCharBuffer
+    implementation 'org.grails:grails-encoder', { // StreamCharBuffer, FastStringWriter
 /*
         // API dependencies in grails-encoder
         exclude group: 'org.apache.groovy', module: 'groovy'
