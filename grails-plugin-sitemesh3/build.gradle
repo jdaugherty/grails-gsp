@@ -28,26 +28,33 @@ dependencies {
     implementation platform("org.grails:grails-bom:$grailsVersion")
 
     api project(':grails-web-gsp'), { // GrailsConventionGroovyPageLocator
+/*
         // API dependencies in grails-web-gsp
         //exclude group: 'org.grails', module: 'grails-gsp' // DefaultGroovyPageLocator
         exclude group: 'org.grails', module: 'grails-web-common'
         exclude group: 'org.grails', module: 'grails-web-taglib'
+*/
     }
     api project(':grails-web-gsp-taglib'), { // GrailsConventionGroovyPageLocator
+/*
         // API dependencies in grails-web-gsp-taglib
         exclude group: 'org.grails', module: 'grails-taglib'
         //exclude group: 'org.grails', module: 'grails-web-gsp' // DefaultGroovyPageLocator
+*/
     }
     api "org.sitemesh:sitemesh:$sitemeshVersion" // SiteMeshFilter
     api 'org.springframework:spring-webmvc' // AbstractHandlerAdapter, ParameterizableViewController, AbstractHandlerMapping
     api 'org.springframework.boot:spring-boot' // FilterRegistrationBean
 
     implementation project(':grails-web-taglib'), { // TagLib, TagLibrary
+/*
         // API dependencies in grails-web-taglib
         exclude group: 'org.grails', module: 'grails-taglib'
         exclude group: 'org.grails', module: 'grails-web-common'
+*/
     }
     implementation 'org.grails:grails-web-common', { // WebUtils
+/*
         // API dependencies in grails-web-common
         exclude group: 'org.apache.groovy', module: 'groovy-templates'
         exclude group: 'org.grails', module: 'grails-core'
@@ -55,6 +62,7 @@ dependencies {
         exclude group: 'org.grails', module: 'grails-encoder'
         exclude group: 'org.springframework', module: 'spring-webmvc'
         exclude group: 'org.springframework', module: 'spring-context-support'
+*/
     }
     implementation 'org.springframework:spring-beans' // Autowired, Qualifier
     implementation 'org.springframework:spring-web' // HttpMethod, ResponseStatusException, HttpStatus

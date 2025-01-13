@@ -11,6 +11,7 @@ dependencies {
     implementation platform("org.grails:grails-bom:$grailsVersion")
 
     api 'org.grails:grails-core', { // InjectableGrailsClass, ArtefactHandlerAdapter, ArtefactInfo, GrailsClass, AbstractInjectableGrailsClass, GrailsApplication, EncodingStateRegistry, EncodingStateRegistryLookup
+/*
         // API dependencies in grails-core
         exclude group: 'org.apache.groovy', module: 'groovy'
         exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
@@ -28,8 +29,10 @@ dependencies {
         exclude group: 'org.springframework', module: 'spring-tx'
         exclude group: 'org.springframework.boot', module: 'spring-boot'
         exclude group: 'org.springframework.boot', module: 'spring-boot-autoconfigure'
+*/
     }
     api 'org.grails:grails-encoder', { // EncodingStateRegistry
+/*
         // API dependencies in grails-encoder
         exclude group: 'org.apache.groovy', module: 'groovy'
         exclude group: 'org.apache.groovy', module: 'groovy-json'
@@ -37,6 +40,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
         exclude group: 'org.slf4j', module: 'slf4j-api'
         exclude group: 'org.springframework', module: 'spring-web'
+*/
     }
     api 'org.springframework:spring-core' // Ordered
 

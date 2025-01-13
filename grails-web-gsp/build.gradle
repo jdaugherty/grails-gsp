@@ -9,6 +9,7 @@ dependencies {
     implementation platform("org.grails:grails-bom:$grailsVersion")
 
     api 'org.grails:grails-core', { // GrailsDomainClass, CacheEntry, Environment, GrailsStringUtils, GrailsApplication, GrailsControllerClass, GrailsApplicationAware, ControllerArtefactHandler, GrailsPluginManager, GrailsFactoriesLoader
+/*
         // API dependencies in grails-core
         exclude group: 'org.apache.groovy', module: 'groovy'
         exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
@@ -26,23 +27,28 @@ dependencies {
         exclude group: 'org.springframework', module: 'spring-tx'
         exclude group: 'org.springframework.boot', module: 'spring-boot'
         exclude group: 'org.springframework.boot', module: 'spring-boot-autoconfigure'
+*/
     }
     api project(':grails-gsp'), { // GroovyPage, GroovyPageBinding, GroovyPageMetaInfo, GroovyPagesTemplateEngine, GroovyPageScriptSource, DefaultGroovyPageLocator, GroovyPageScriptSource, GroovyPageCompiledScriptSource, GroovyPageResourceScriptSource
+/*
         // API dependencies in grails-gsp
         exclude group: 'org.grails', module: 'grails-bootstrap'
         exclude group: 'org.grails', module: 'grails-encoder'
         exclude group: 'org.apache.groovy', module: 'groovy-templates'
         // Implementation dependencies in grails-gsp
         exclude group: 'org.grails', module: 'grails-taglib'
-
+*/
     }
     api project(':grails-taglib'), { // GrailsTagException, TemplateVariableBinding, OutputEncodingSettings, WithCodecHelper
+/*
         // API dependencies in grails-taglib
         exclude group: 'org.grails', module: 'grails-core'
         exclude group: 'org.grails', module: 'grails-encoder'
         exclude group: 'org.springframework', module: 'spring-core'
+*/
     }
     api 'org.grails:grails-web-common', { // GrailsWebRequest, GrailsApplicationAttributes, MimeType, MimeTypeResolver, GroovyPagesUriService, DefaultGroovyPagesUriService, AbstractGrailsView, GrailsViewResolver
+/*
         // API dependencies in grails-web-common
         exclude group: 'org.grails', module: 'grails-core'
         exclude group: 'org.grails', module: 'grails-databinding'
@@ -50,6 +56,7 @@ dependencies {
         //exclude group: 'org.apache.groovy', module: 'groovy-templates' // TemplateEngine needed downstream
         exclude group: 'org.springframework', module: 'spring-webmvc'
         exclude group: 'org.springframework', module: 'spring-context-support'
+*/
     }
     api 'org.springframework:spring-beans' // InitializingBean, Autowired
     api 'org.springframework:spring-context' // ScriptSource
@@ -58,9 +65,13 @@ dependencies {
 
     implementation 'org.apache.groovy:groovy-templates' // Template
     implementation 'org.grails:grails-bootstrap', { // GrailsNameUtils, GrailsResourceUtils
+/*
+        // API dependencies in grails-bootstrap
         exclude group: 'org.yaml', module: 'snakeyaml'
+*/
     }
     implementation 'org.grails:grails-encoder', { // CodecPrintWriter, FastStringWriter, EncodedAppenderWriterFactory, Encoder, StreamingEncoder, StreamingEncoderWriter
+/*
         // API dependencies in grails-encoder
         exclude group: 'org.apache.groovy', module: 'groovy'
         exclude group: 'org.apache.groovy', module: 'groovy-json'
@@ -68,6 +79,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
         exclude group: 'org.slf4j', module: 'slf4j-api'
         exclude group: 'org.springframework', module: 'spring-web'
+*/
     }
     implementation 'org.springframework:spring-core' // ByteArrayResource, Assert, ReflectionUtils
 
@@ -78,6 +90,7 @@ dependencies {
     testImplementation 'jakarta.servlet:jakarta.servlet-api'
     testImplementation 'net.bytebuddy:byte-buddy'
     testImplementation 'org.grails:grails-web-common', { // GrailsWebMockUtil
+/*
         // API dependencies in grails-web-common
         exclude group: 'org.grails', module: 'grails-core'
         exclude group: 'org.grails', module: 'grails-databinding'
@@ -85,6 +98,7 @@ dependencies {
         exclude group: 'org.apache.groovy', module: 'groovy-templates'
         exclude group: 'org.springframework', module: 'spring-webmvc'
         exclude group: 'org.springframework', module: 'spring-context-support'
+*/
     }
     testImplementation 'org.apache.groovy:groovy-xml'
     testImplementation 'org.spockframework:spock-core'

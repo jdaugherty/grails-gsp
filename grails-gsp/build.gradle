@@ -11,17 +11,22 @@ dependencies {
     implementation platform("org.grails:grails-bom:$grailsVersion")
 
     api 'org.grails:grails-bootstrap', { // ConfigMap
+/*
         // API dependencies in grails-bootstrap
         exclude group: 'org.yaml', module: 'snakeyaml'
+*/
     }
     api 'org.apache.groovy:groovy-templates' // Template, TemplateEngine
 
     implementation project(':grails-taglib'), { // GrailsTagException, OutputEncodingSettings are used
+/*
         // API dependencies in grails-taglib
         exclude group: 'org.grails', module: 'grails-core'
         exclude group: 'org.grails', module: 'grails-encoder'
+*/
     }
     implementation 'org.grails:grails-core', { // GrailsStringUtils
+/*
         // API dependencies in grails-core
         exclude group: 'org.apache.groovy', module: 'groovy'
         exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
@@ -39,8 +44,10 @@ dependencies {
         exclude group: 'org.springframework', module: 'spring-tx'
         exclude group: 'org.springframework.boot', module: 'spring-boot'
         exclude group: 'org.springframework.boot', module: 'spring-boot-autoconfigure'
+*/
     }
     implementation 'org.grails:grails-encoder', { // FastStringWriter, StreamByteBuffer, StreamCharBuffer are used
+/*
         // API dependencies in grails-encoder
         exclude group: 'org.apache.groovy', module: 'groovy'
         exclude group: 'org.apache.groovy', module: 'groovy-json'
@@ -48,6 +55,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
         exclude group: 'org.slf4j', module: 'slf4j-api'
         exclude group: 'org.springframework', module: 'spring-web'
+*/
     }
     implementation 'org.springframework:spring-context' // ApplicationContext
 
