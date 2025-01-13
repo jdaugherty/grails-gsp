@@ -20,7 +20,7 @@ tasks.register('groovydoc', Groovydoc) {
     classpath = groovydocClasspath
     groovyClasspath = groovydocClasspath
     docTitle = "Groovy Server Pages (GSP) - ${project.name} - ${project.version}"
-    access = GroovydocAccess.PRIVATE
+    access = GroovydocAccess.PROTECTED
     includeAuthor = true
     includeMainForScripts = false
     processScripts = false
