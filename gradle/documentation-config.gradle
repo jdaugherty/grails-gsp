@@ -1,8 +1,11 @@
+apply plugin: 'groovy'
+
 configurations.register('documentation')
 
 dependencies {
-    documentation "org.apache.groovy:groovy-groovydoc:4.0.24"
-    documentation "org.apache.groovy:groovy-ant:4.0.24"
+    documentation platform("org.grails:grails-bom:$grailsVersion")
+    documentation 'org.apache.groovy:groovy-groovydoc'
+    documentation 'org.apache.groovy:groovy-ant'
 }
 
 tasks.register('cleanDocs', Delete) {
@@ -10,7 +13,7 @@ tasks.register('cleanDocs', Delete) {
     delete(rootProject.layout.buildDirectory.dir('docs'))
 }
 
-tasks.register('groovydoc', Groovydoc) {
+tasks.withType(Groovydoc).configureEach {
     group = 'documentation'
     description = 'Copies Groovy API Documentation for all supporting projects'
     Set<Project> groovyDocProjects = rootProject.subprojects.findAll {
