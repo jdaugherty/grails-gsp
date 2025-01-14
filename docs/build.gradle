@@ -11,6 +11,26 @@ buildscript {
 
 apply plugin: 'groovy'
 
+dependencies {
+    implementation platform("org.grails:grails-bom:$grailsVersion")
+    implementation 'org.apache.groovy:groovy'
+}
+
+tasks.register('resolveGroovyVersion') {
+    group = 'documentation'
+    description = 'Resolve Groovy Version from the BOM'
+    ext.resolved = configurations.compileClasspath
+            .resolvedConfiguration
+            .resolvedArtifacts
+            .find {
+                // Look for your Groovy artifact by group and name
+                it.moduleVersion.id.group == 'org.apache.groovy' &&
+                it.moduleVersion.id.name.contains('groovy')
+            }.moduleVersion.id.version
+    logger.info("Resolved Groovy Version for Guide: $resolved")
+}
+
+
 // TODO: PublishGuide should eventually ensure the build directory exists
 tasks.register('docsBuild') {
     doFirst {
@@ -23,7 +43,7 @@ tasks.register('docsBuild') {
 tasks.register('publishGuide', PublishGuide) {
     group = 'documentation'
     description = 'Generate Guide'
-    dependsOn('docsBuild')
+    dependsOn('docsBuild', 'resolveGroovyVersion')
 
     targetDir = project.layout.buildDirectory.dir('docs').get().asFile
     outputs.dir(targetDir) // ensure gradle understands what this task generates
@@ -42,8 +62,8 @@ tasks.register('publishGuide', PublishGuide) {
             'javaee'        : 'https://docs.oracle.com/javaee/7/api/',
             'jakartaee'     : 'https://jakarta.ee/specifications/platform/10/apidocs/',
             'javase'        : 'https://docs.oracle.com/en/java/javase/17/docs/api/index.html',
-            'groovyapi'     : "https://docs.groovy-lang.org/latest/html/gapi/",
-            'groovyjdk'     : "https://docs.groovy-lang.org/latest/html/groovy-jdk/",
+            'groovyapi'     : "https://docs.groovy-lang.org/${resolveGroovyVersion.resolved}/html/gapi/",
+            'groovyjdk'     : "https://docs.groovy-lang.org/${resolveGroovyVersion.resolved}/html/groovy-jdk/",
             'grailsapi'     : "https://docs.grails.org/$grailsVersion/api/",
             'grailsdocs'    : "https://docs.grails.org/$grailsVersion/",
             'gormapi'       : 'https://gorm.grails.org/latest/api/',
