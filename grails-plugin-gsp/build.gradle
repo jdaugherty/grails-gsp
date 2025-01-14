@@ -165,6 +165,8 @@ dependencies {
 */
     }
 
+    runtimeOnly "org.grails:grails-plugin-codecs:$grailsVersion" // Registers CodecLookup bean
+
     testCompileOnly 'jakarta.annotation:jakarta.annotation-api'
 
     testImplementation project(':grails-web-jsp'), { // TagLibraryResolverImpl
