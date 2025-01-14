@@ -67,6 +67,7 @@ dependencies {
     implementation 'org.springframework:spring-beans' // Autowired, Qualifier
     implementation 'org.springframework:spring-web' // HttpMethod, ResponseStatusException, HttpStatus
 
+    runtimeOnly "org.grails:grails-plugin-codecs:$grailsVersion" // Registers CodecLookup bean
     runtimeOnly "org.sitemesh:spring-boot-starter-sitemesh:$sitemeshVersion"
 
     compileOnly 'jakarta.servlet:jakarta.servlet-api' // Provided by servlet container
