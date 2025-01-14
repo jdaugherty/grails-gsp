@@ -24,6 +24,7 @@ dependencies {
 
     runtimeOnly project(':grails-plugin-gsp')
     runtimeOnly 'com.bertramlabs.plugins:asset-pipeline-grails'
+    runtimeOnly 'org.fusesource.jansi:jansi'
     runtimeOnly 'org.grails:grails-plugin-url-mappings'
     runtimeOnly 'org.grails:grails-plugin-i18n'
     runtimeOnly 'org.springframework.boot:spring-boot-autoconfigure'
