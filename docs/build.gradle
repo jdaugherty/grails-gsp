@@ -27,7 +27,7 @@ tasks.register('resolveGroovyVersion') {
                 it.moduleVersion.id.group == 'org.apache.groovy' &&
                 it.moduleVersion.id.name.contains('groovy')
             }.moduleVersion.id.version
-    logger.info("Resolved Groovy Version for Guide: $resolved")
+    logger.lifecycle('Resolved Groovy version for Guide links: {}', resolved)
 }
 
 
