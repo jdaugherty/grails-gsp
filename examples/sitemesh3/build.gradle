@@ -21,6 +21,7 @@ dependencies {
     implementation project(':grails-plugin-sitemesh3')
     implementation 'org.grails:grails-core'
     implementation 'org.grails:grails-plugin-controllers'
+    implementation 'org.grails:grails-plugin-rest'
 
     runtimeOnly project(':grails-plugin-gsp')
     runtimeOnly 'com.bertramlabs.plugins:asset-pipeline-grails'
