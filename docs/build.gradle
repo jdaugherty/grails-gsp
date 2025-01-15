@@ -23,7 +23,6 @@ tasks.register('resolveGroovyVersion') {
             .resolvedConfiguration
             .resolvedArtifacts
             .find {
-                // Look for your Groovy artifact by group and name
                 it.moduleVersion.id.group == 'org.apache.groovy' &&
                 it.moduleVersion.id.name.contains('groovy')
             }.moduleVersion.id.version
