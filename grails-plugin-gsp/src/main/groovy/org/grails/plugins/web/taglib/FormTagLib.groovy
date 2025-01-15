@@ -677,6 +677,7 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
      * @attr disabled Makes the resulting inputs and selects to be disabled. Is treated as a Groovy Truth.
      * @attr readonly Makes the resulting inputs and selects to be made read only. Is treated as a Groovy Truth.
      * @attr locale The locale to use for display formatting. Defaults to the current request locale and then the system default locale if not specified.
+     * @attr selectDateClass css class added to each select tag
      */
     Closure datePicker = { attrs ->
         def out = out // let x = x ?
@@ -797,6 +798,9 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
             if (attrs.readonly) {
                 out << ' readonly="readonly"'
             }
+            if (attrs.selectDateClass) {
+                out << ' class="'+attrs.selectDateClass+'"'
+            }
             out << '>'
 
             if (noSelection) {
@@ -820,6 +824,9 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
             }
             if (attrs.readonly) {
                 out << ' readonly="readonly"'
+            }
+            if (attrs.selectDateClass) {
+                out << ' class="'+attrs.selectDateClass+'"'
             }
             out << '>'
 
@@ -847,6 +854,9 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
             if (attrs.readonly) {
                 out << ' readonly="readonly"'
             }
+            if (attrs.selectDateClass) {
+                out << ' class="'+attrs.selectDateClass+'"'
+            }
             out << '>'
 
             if (noSelection) {
@@ -870,6 +880,9 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
             }
             if (attrs.readonly) {
                 out << ' readonly="readonly"'
+            }
+            if (attrs.selectDateClass) {
+                out << ' class="'+attrs.selectDateClass+'"'
             }
             out << '>'
 
@@ -901,6 +914,9 @@ class FormTagLib implements ApplicationContextAware, InitializingBean, TagLibrar
             }
             if (attrs.readonly) {
                 out << 'readonly="readonly"'
+            }
+            if (attrs.selectDateClass) {
+                out << ' class="'+attrs.selectDateClass+'"'
             }
             out << '>'
 
