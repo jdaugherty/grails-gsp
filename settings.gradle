@@ -27,10 +27,17 @@ buildCache {
 
 rootProject.name = 'grails-gsp'
 
+include 'docs'
 include 'grails-gsp'
 include 'grails-plugin-gsp'
+include 'grails-plugin-sitemesh3'
 include 'grails-taglib'
 include 'grails-web-gsp'
 include 'grails-web-gsp-taglib'
 include 'grails-web-jsp'
 include 'grails-web-taglib'
+
+// Examples
+include 'examples-sitemesh3'
+
+project(':examples-sitemesh3').projectDir = file('examples/sitemesh3')

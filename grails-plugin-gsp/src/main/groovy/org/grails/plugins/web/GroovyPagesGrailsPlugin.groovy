@@ -1,5 +1,5 @@
 /*
- * Copyright 2004-2024 the original author or authors.
+ * Copyright 2004-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.core.io.Resource
 import org.springframework.util.ClassUtils
 import org.springframework.web.servlet.view.InternalResourceViewResolver
+
 /**
  * Sets up and configures the GSP and GSP tag library support in Grails.
  *
@@ -63,7 +64,7 @@ class GroovyPagesGrailsPlugin extends Plugin {
     def watchedResources = ["file:./plugins/*/grails-app/taglib/**/*TagLib.groovy",
                             "file:./grails-app/taglib/**/*TagLib.groovy"]
 
-    def grailsVersion = "6.0.0 > *"
+    def grailsVersion = "7.0.0-SNAPSHOT > *"
     def dependsOn = [core: GrailsUtil.getGrailsVersion(), i18n: GrailsUtil.getGrailsVersion()]
     def observe = ['controllers']
     def loadAfter = ['filters']
@@ -113,7 +114,8 @@ class GroovyPagesGrailsPlugin extends Plugin {
         RuntimeSpringConfiguration spring = springConfig
 
         // resolves JSP tag libraries
-        if(ClassUtils.isPresent("org.grails.gsp.jsp.TagLibraryResolverImpl", application.classLoader)) {
+        boolean resolveJspTagLibraries = ClassUtils.isPresent('org.grails.gsp.jsp.TagLibraryResolverImpl', application.classLoader)
+        if (resolveJspTagLibraries) {
             jspTagLibraryResolver(TagLibraryResolverImpl)
         }
 
@@ -197,7 +199,9 @@ class GroovyPagesGrailsPlugin extends Plugin {
                 reloadEnabled = enableReload
             }
             tagLibraryLookup = gspTagLibraryLookup
-            jspTagLibraryResolver = jspTagLibraryResolver
+            if (resolveJspTagLibraries) {
+                jspTagLibraryResolver = jspTagLibraryResolver
+            }
             cacheResources = enableCacheResources
         }
 
