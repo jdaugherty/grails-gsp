@@ -24,7 +24,7 @@ publishing {
     publications {
         maven(MavenPublication) {
 
-            artifactId = project.name
+            artifactId = project.findProperty('artifactId') ?: project.name
             groupId = project.group
             version = project.version
 
